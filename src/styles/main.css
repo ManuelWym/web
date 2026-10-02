@@ -1,0 +1,43 @@
+﻿
+:root {
+  /* Paleta UAS */
+  --uas-blue:        #082154;
+  --uas-mostaza:     #867317;
+  --uas-gold:        #c49e0d;
+
+  /* Texto */
+  --color-text:      #1a1a1a;
+  --color-text-muted:#6b7280;
+
+  /* Estados */
+  --color-error:     #ef4444;
+  --color-success:   #10b981;
+
+  /* Radios */
+  --radius-sm: 6px;
+  --radius-md: 8px;
+
+  --transition: 0.2s ease;
+  --font: 'Inter', system-ui, sans-serif;
+}
+
+/* ===========================
+   RESET & BASE
+=========================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+
+body {
+  font-family: var(--font);
+  background-color: #ffffff;
+  color: var(--color-text);
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+a { color: var(--uas-blue); text-decoration: none; font-weight: 500; }
+a:hover { text-decoration: underline; }
+
+
+

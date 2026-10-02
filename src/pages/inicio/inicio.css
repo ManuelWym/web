@@ -1,0 +1,17 @@
+.inicio {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+.inicio-titulo {
+  color: var(--uas-blue);
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+.inicio-usuario {
+  color: var(--color-text-muted);
+}
+
+.inicio-header {display: flex; justify-content: space-between; align-items: center;}
+
+.btn-logout {background-color: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold;}
