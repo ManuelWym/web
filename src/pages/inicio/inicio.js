@@ -1,4 +1,4 @@
-
+import { logout } from '../../api/auth.js';
 import './inicio.css';
 
 
@@ -17,6 +17,9 @@ export function renderInicio(container, usuario) {
     <main class="inicio">
       <div class="inicio-header" >
         <h1 class="inicio-titulo">${TITULOS[usuario.rol]}</h1>
+        <button id="btn-logout" class="btn-logout" >
+          Cerrar sesión
+        </button>
       </div>
       <p class="inicio-usuario"></p>
     </main>
@@ -25,4 +28,17 @@ export function renderInicio(container, usuario) {
   // textContent para no interpretar el nombre como HTML
   container.querySelector('.inicio-usuario').textContent =
     `${usuario.nombre} · ${usuario.numero_cuenta} · ${usuario.rol}`;
+
+  // Manejador del evento para el botón de cerrar sesión
+  const btnLogout = container.querySelector('#btn-logout');
+  if (btnLogout) {
+    btnLogout.addEventListener('click', async () => {
+      try {
+        await logout();
+      } catch (error) {
+        console.error('No se pudo revocar la sesión en la API:', error);
+      }
+      window.location.hash = '#/login';
+    });
+  }
 }
