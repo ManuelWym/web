@@ -48,4 +48,23 @@ export async function login(matricula, nip) {
   return data;
 }
 
+/**
+ * Cierra la sesión revocando el token en la API.
+ */
+export async function logout() {
+  const token = localStorage.getItem('token');
+  try {
+    if (!token) return;
 
+    await fetch(`${API_BASE}/logout`, {
+      method:  'POST',
+      headers: {
+        'Accept':        'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+  } finally {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  }
+}
