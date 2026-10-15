@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet, useNavigate } from "react-router";
+import { Link, Outlet, useNavigate } from "react-router";
 import { logout } from "@/features/auth/services/LogoutService";
 import "./AuthLayout.css";
 
@@ -17,6 +17,9 @@ export function AuthLayout() {
     <>
       {token && (
         <header className="inicio-header">
+          <Link className="account-header-link" to="/me">
+            Mi cuenta
+          </Link>
           <button id="btn-logout" className="btn-logout" onClick={handleLogout}>
             Cerrar sesión
           </button>

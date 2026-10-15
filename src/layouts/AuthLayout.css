@@ -16,7 +16,12 @@
   display: flex;
   justify-content: flex-end; /* Empuja todo el contenido interno hacia la derecha */
   align-items: center;       /* Lo alinea verticalmente al centro */
+  gap: 1rem;
   padding: 15px;
+}
+
+.account-header-link {
+  font-weight: 600;
 }
 
 .btn-logout {
