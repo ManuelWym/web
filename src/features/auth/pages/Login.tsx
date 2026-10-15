@@ -1,15 +1,15 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
-import { useNavigate } from "react-router";// Ajusta la ruta a tu archivo login.ts
-import logoAula from "../../assets/logo-aula-uas.png";
+import { useNavigate } from "react-router";
+import logoAula from "@/assets/LogoAulaUas.png";
 
-import "./login.css";
-import { login } from "../../api/postLoginAction.ts";
+import "./Login.css";
+import { login } from "@/features/auth/services/LoginService";
 
 /**
  * Retorna la ruta de React Router correspondiente al rol del usuario.
  */
 function obtenerRutaPorRol(rol: string): string {
-  switch (rol.toLowerCase()) {
+  switch (rol.trim().toLowerCase()) {
     case "estudiante":
     case "alumno":
       return "/estudiante";

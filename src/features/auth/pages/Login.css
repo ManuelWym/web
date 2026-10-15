@@ -8,7 +8,7 @@
 .login-left {
   flex: 1;
   background-color: var(--uas-blue);
-  background-image: url('../../assets/background-login.png');
+  background-image: url('../../../assets/BackgroundLogin.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

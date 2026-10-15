@@ -1,6 +1,6 @@
-import type { ApiErrorResponse } from "../interfaces/ApiErrorResponse";
-import type { LoginResponse } from "../interfaces/loginResponse";
-import { apiClient } from "./apiClient";
+import type { ApiErrorResponse } from "@/features/auth/types/ApiErrorResponse";
+import type { LoginResponse } from "@/features/auth/types/LoginResponse";
+import { apiClient } from "@/services/ApiClient";
 import { AxiosError } from "axios";
 
 
@@ -9,7 +9,6 @@ import { AxiosError } from "axios";
  * @param matricula Número de cuenta / matrícula
  * @param nip NIP del usuario
  * 
- * Modifica las importaciones de los archivos en el directorio con el nombre "Login.ts" al cual se le cambio el nombre por "postLoginAction.ts"
  */
 export async function login(
   matricula: string,

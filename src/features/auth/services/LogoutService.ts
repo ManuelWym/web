@@ -1,4 +1,4 @@
-import { apiClient } from "./apiClient";
+import { apiClient } from "@/services/ApiClient";
 
 /**
  * Cierra la sesión revocando el token en la API y limpia el almacenamiento local.
