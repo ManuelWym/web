@@ -1,9 +1,10 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import { AdminDashboard } from "@/features/admin/pages/AdminDashboard";
+import { AdminUpdate } from "@/features/admin/pages/AdminUpdate";
 import { DashboardEstudiante } from "@/features/customer/pages/DashboardEstudiante";
 import { CampusFeaturePage } from "@/features/customer/pages/CampusFeaturePage";
 import { ProviderDashboard } from "@/features/provider/pages/ProviderDashboard";
-import { MyAccount } from "@/features/auth/pages/MyAccount";
+import { ChangeNip } from "@/features/auth/pages/ChangeNip";
 import { Profile } from "@/features/auth/pages/Profile";
 import { AdminLayout } from "@/layouts/AdminLayout";
 import { AuthLayout } from "@/layouts/AuthLayout";
@@ -31,12 +32,12 @@ export const router = createBrowserRouter([
             element: <CampusHomeRoute />,
           },
           {
-            element: <RoleProtectedRoute allowedRoles={["admin"]} />,
-            children: [{ path: "me", element: <MyAccount /> }],
-          },
-          {
             path: "perfil",
             element: <Profile />,
+          },
+          {
+            path: "cambiar-nip",
+            element: <ChangeNip />,
           },
           {
             path: "mensajes",
@@ -57,13 +58,20 @@ export const router = createBrowserRouter([
             ),
           },
           {
-            path: "calificaciones",
             element: (
-              <CampusFeaturePage
-                title="Calificaciones"
-                description="Aquí podrás consultar tus calificaciones cuando esta sección esté disponible."
-              />
+              <RoleProtectedRoute allowedRoles={["student", "teacher"]} />
             ),
+            children: [
+              {
+                path: "calificaciones",
+                element: (
+                  <CampusFeaturePage
+                    title="Calificaciones"
+                    description="Aquí podrás consultar tus calificaciones cuando esta sección esté disponible."
+                  />
+                ),
+              },
+            ],
           },
           {
             element: <RoleProtectedRoute allowedRoles={["student"]} />,
@@ -91,7 +99,10 @@ export const router = createBrowserRouter([
               {
                 path: "admin",
                 element: <AdminLayout />,
-                children: [{ index: true, element: <AdminDashboard /> }],
+                children: [
+                  { index: true, element: <AdminDashboard /> },
+                  { path: "update", element: <AdminUpdate /> },
+                ],
               },
               {
                 path: "administrador",

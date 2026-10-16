@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Search, UserPlus } from "lucide-react";
+import { Search, UserCog, UserPlus } from "lucide-react";
+import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/Button";
 import { CsvImportForm } from "@/features/admin/components/CsvImportForm";
 import {
@@ -36,6 +37,7 @@ const roleLabels: Record<AdminUserRole, string> = {
 };
 
 export function AdminDashboard() {
+  const navigate = useNavigate();
   const [usersPage, setUsersPage] = useState<UsersPage | null>(null);
   const [filters, setFilters] = useState<UserListFilters>({ page: 1 });
   const [searchText, setSearchText] = useState("");
@@ -403,10 +405,20 @@ export function AdminDashboard() {
               <option value="inactivo">Inactivo</option>
             </select>
           </label>
-          <Button type="submit">
-            <Search />
-            Buscar
-          </Button>
+          <div className="admin-user-filter-actions">
+            <Button type="submit">
+              <Search />
+              Buscar
+            </Button>
+            <Button
+              type="button"
+              className="admin-update-users-button"
+              onClick={() => navigate("/admin/update")}
+            >
+              <UserCog />
+              Actualizar datos
+            </Button>
+          </div>
         </form>
 
         {listError && (

@@ -1,0 +1,204 @@
+.admin-update-page {
+  width: min(100% - 2rem, 960px);
+  margin: 0 auto;
+  padding: 2rem 0 3rem;
+}
+
+.admin-update-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 1.5rem;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.admin-update-back-link:hover {
+  color: var(--uas-blue);
+}
+
+.admin-update-heading {
+  margin-bottom: 1.5rem;
+}
+
+.admin-update-heading h1 {
+  margin: 0.25rem 0 0.5rem;
+  color: var(--uas-blue);
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+}
+
+.admin-update-heading p {
+  margin-bottom: 1rem;
+  color: var(--color-text-muted);
+}
+
+.admin-update-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 1.25rem;
+}
+
+.admin-update-user-panel {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.admin-update-search {
+  display: grid;
+  gap: 0.4rem;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.admin-update-search > div {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.admin-update-search input {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--foreground);
+  background: var(--background);
+  font: inherit;
+}
+
+.admin-update-user-list {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.admin-update-pagination {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+.admin-update-pagination span {
+  grid-column: 1 / -1;
+}
+
+.admin-update-user-list button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.admin-update-user-list button:last-child {
+  border-bottom: 0;
+}
+
+.admin-update-user-list button:hover,
+.admin-update-user-list button.active {
+  background: var(--muted);
+}
+
+.admin-update-user-list button:focus-visible {
+  position: relative;
+  outline: 2px solid var(--uas-blue);
+  outline-offset: -2px;
+}
+
+.admin-update-user-list button > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 0.2rem;
+}
+
+.admin-update-user-list small {
+  color: var(--color-text-muted);
+}
+
+.admin-update-avatar {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--uas-blue);
+  background: color-mix(in srgb, var(--uas-blue) 12%, white);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.admin-update-form {
+  margin-bottom: 0;
+}
+
+.admin-update-form h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-update-form label {
+  display: grid;
+  gap: 0.4rem;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.admin-update-form input,
+.admin-update-form select {
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--foreground);
+  background: var(--background);
+  font: inherit;
+}
+
+.admin-update-form input:disabled {
+  background: var(--muted);
+}
+
+.admin-update-message {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.admin-update-error {
+  color: var(--color-error);
+}
+
+.admin-update-success,
+.admin-update-note {
+  color: var(--color-text-muted);
+}
+
+.admin-update-note {
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .admin-update-layout {
+    grid-template-columns: 1fr;
+  }
+}
