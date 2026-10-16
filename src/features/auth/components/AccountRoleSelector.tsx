@@ -1,9 +1,9 @@
 import { GraduationCap, ShieldCheck } from "lucide-react";
-import type { AccountRole } from "@/features/auth/types/AccountProfile";
+import type { AccountDashboardRole } from "@/features/auth/types/AccountProfile";
 
 interface AccountRoleSelectorProps {
-  role: AccountRole;
-  onChange: (role: AccountRole) => void;
+  role: AccountDashboardRole;
+  onChange: (role: AccountDashboardRole) => void;
 }
 
 export function AccountRoleSelector({

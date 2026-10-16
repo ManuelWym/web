@@ -1,25 +1,56 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/Button";
 import { AccountRoleSelector } from "@/features/auth/components/AccountRoleSelector";
 import {
-  loadAccountProfile,
+  fetchAccountProfile,
   loadAccountRole,
   saveAccountRole,
 } from "@/features/auth/services/AccountProfileService";
-import type { AccountRole } from "@/features/auth/types/AccountProfile";
+import type {
+  AccountDashboardRole,
+  AccountProfile,
+} from "@/features/auth/types/AccountProfile";
 import "./MyAccount.css";
 
-const dashboards: Record<AccountRole, string> = {
+const dashboards: Record<AccountDashboardRole, string> = {
   estudiante: "/estudiante",
   administrador: "/admin",
 };
 
 export function MyAccount() {
   const navigate = useNavigate();
-  const [profile] = useState(loadAccountProfile);
+  const [profile, setProfile] = useState<AccountProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [profileError, setProfileError] = useState<string | null>(null);
   const [role, setRole] = useState(loadAccountRole);
+
+  useEffect(() => {
+    let active = true;
+
+    fetchAccountProfile()
+      .then((accountProfile) => {
+        if (active) setProfile(accountProfile);
+      })
+      .catch((error: unknown) => {
+        if (active) {
+          setProfileError(
+            error instanceof Error
+              ? error.message
+              : "No se pudieron cargar los datos de tu cuenta.",
+          );
+        }
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const profileFields: [string, string][] = profile
     ? [
         ["ID", profile.id],
@@ -39,7 +70,7 @@ export function MyAccount() {
       ]
     : [];
 
-  const handleRoleChange = (nextRole: AccountRole) => {
+  const handleRoleChange = (nextRole: AccountDashboardRole) => {
     setRole(nextRole);
     saveAccountRole(nextRole);
   };
@@ -52,7 +83,9 @@ export function MyAccount() {
         <p>Consulta los datos asociados a tu cuenta.</p>
       </header>
 
-      {profile ? (
+      {loading ? (
+        <p aria-live="polite">Cargando perfil...</p>
+      ) : profile ? (
         <dl className="account-profile-data">
           {profileFields.map(([label, value]) => (
             <div key={label}>
@@ -63,7 +96,7 @@ export function MyAccount() {
         </dl>
       ) : (
         <p className="account-profile-error" role="alert">
-          No se pudieron cargar los datos de tu cuenta. Vuelve a iniciar sesión.
+          {profileError ?? "No se pudieron cargar los datos de tu cuenta."}
         </p>
       )}
 

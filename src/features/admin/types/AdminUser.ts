@@ -42,3 +42,26 @@ export interface CreateUserResponse {
   message: string;
   user: AdminUser;
 }
+
+export type UpdateUserPayload = Pick<
+  AdminUser,
+  "nombre" | "correo" | "rol"
+>;
+
+export interface UpdateUserResponse {
+  message: string;
+  user: AdminUser;
+}
+
+export interface UpdateUserStatusPayload {
+  activo: boolean;
+}
+
+export interface UpdateUserStatusResponse {
+  message: string;
+  user: AdminUser;
+}
+
+export interface ResetUserNipPayload {
+  nip: string;
+}
