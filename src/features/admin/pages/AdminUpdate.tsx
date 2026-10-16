@@ -3,15 +3,19 @@ import {
   ArrowLeft,
   CircleAlert,
   CircleCheck,
+  KeyRound,
   Save,
   Search,
+  ToggleRight,
   UserCog,
 } from "lucide-react";
 import { Link } from "react-router";
 import { Button } from "@/components/ui/Button";
 import {
   listUsers,
+  resetUserNip,
   updateUser,
+  updateUserStatus,
 } from "@/features/admin/services/AdminUserService";
 import type {
   AdminUser,
@@ -53,6 +57,14 @@ export function AdminUpdate() {
   const [error, setError] = useState("");
   const [loadError, setLoadError] = useState("");
   const [saved, setSaved] = useState(false);
+  const [activeStatus, setActiveStatus] = useState(true);
+  const [savingStatus, setSavingStatus] = useState(false);
+  const [statusError, setStatusError] = useState("");
+  const [statusSaved, setStatusSaved] = useState(false);
+  const [newNip, setNewNip] = useState("");
+  const [resettingNip, setResettingNip] = useState(false);
+  const [nipError, setNipError] = useState("");
+  const [nipSaved, setNipSaved] = useState(false);
   const selectedUserIdRef = useRef<number | null>(null);
 
   const selectedUser =
@@ -81,8 +93,14 @@ export function AdminUpdate() {
             ? nextSelectedUser.rol
             : "alumno",
         );
+        setActiveStatus(nextSelectedUser?.activo ?? true);
         setError("");
         setSaved(false);
+        setStatusError("");
+        setStatusSaved(false);
+        setNewNip("");
+        setNipError("");
+        setNipSaved(false);
       })
       .catch((requestError: unknown) => {
         if (!isCurrentRequest) return;
@@ -109,6 +127,12 @@ export function AdminUpdate() {
     setRole(isAdminUserRole(user.rol) ? user.rol : "alumno");
     setError("");
     setSaved(false);
+    setActiveStatus(user.activo);
+    setStatusError("");
+    setStatusSaved(false);
+    setNewNip("");
+    setNipError("");
+    setNipSaved(false);
   };
 
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
@@ -173,6 +197,72 @@ export function AdminUpdate() {
     }
   };
 
+  const saveStatus = async () => {
+    if (!selectedUser) {
+      setStatusError("Selecciona un usuario.");
+      setStatusSaved(false);
+      return;
+    }
+    if (selectedUser.activo === activeStatus) {
+      setStatusError(`El usuario ya está ${activeStatus ? "activo" : "inactivo"}.`);
+      setStatusSaved(false);
+      return;
+    }
+
+    setSavingStatus(true);
+    setStatusError("");
+    setStatusSaved(false);
+    try {
+      const response = await updateUserStatus(selectedUser.id, {
+        activo: activeStatus,
+      });
+      setUsers((currentUsers) =>
+        currentUsers.map((user) =>
+          user.id === response.user.id ? response.user : user,
+        ),
+      );
+      setActiveStatus(response.user.activo);
+      setStatusSaved(true);
+    } catch (requestError: unknown) {
+      setStatusError(
+        requestError instanceof Error
+          ? requestError.message
+          : "No se pudo actualizar el estado del usuario.",
+      );
+    } finally {
+      setSavingStatus(false);
+    }
+  };
+
+  const saveNewNip = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setNipSaved(false);
+    if (!selectedUser) {
+      setNipError("Selecciona un usuario.");
+      return;
+    }
+    if (!newNip.trim()) {
+      setNipError("Escribe el NIP nuevo.");
+      return;
+    }
+
+    setResettingNip(true);
+    setNipError("");
+    try {
+      await resetUserNip(selectedUser.id, { nip: newNip });
+      setNewNip("");
+      setNipSaved(true);
+    } catch (requestError: unknown) {
+      setNipError(
+        requestError instanceof Error
+          ? requestError.message
+          : "No se pudo restablecer el NIP del usuario.",
+      );
+    } finally {
+      setResettingNip(false);
+    }
+  };
+
   return (
     <main className="admin-update-page">
       <Link to="/admin" className="admin-update-back-link">
@@ -232,11 +322,16 @@ export function AdminUpdate() {
                   <span className="admin-update-avatar" aria-hidden="true">
                     {getInitials(user.nombre)}
                   </span>
-                  <span>
+                  <span className="admin-update-user-info">
                     <strong>{user.nombre}</strong>
                     <small>
                       {user.numero_cuenta} · {user.rol}
                     </small>
+                  </span>
+                  <span
+                    className={`admin-update-user-status ${user.activo ? "is-active" : "is-inactive"}`}
+                  >
+                    {user.activo ? "Activo" : "Inactivo"}
                   </span>
                 </button>
               ))}
@@ -282,84 +377,245 @@ export function AdminUpdate() {
           )}
         </div>
 
-        <form
-          className="admin-card admin-update-form"
-          onSubmit={save}
-        >
-          <h2>
-            <UserCog size={18} aria-hidden="true" />
-            Datos del usuario
-          </h2>
-          <label>
-            Número de cuenta
-            <input
-              value={selectedUser?.numero_cuenta ?? ""}
-              disabled
-              readOnly
-            />
-          </label>
-          <label>
-            Nombre
-            <input
-              value={name}
-              required
-              onChange={(event) => {
-                setName(event.target.value);
-                setSaved(false);
-              }}
-            />
-          </label>
-          <label>
-            Correo
-            <input
-              type="email"
-              value={email}
-              onChange={(event) => {
-                setEmail(event.target.value);
-                setSaved(false);
-              }}
-            />
-          </label>
-          <label>
-            Rol
-            <select
-              value={role}
-              disabled={!selectedUser}
-              onChange={(event) => {
-                const nextRole = event.target.value;
-                if (isAdminUserRole(nextRole)) {
-                  setRole(nextRole);
+        <div className="admin-update-forms">
+          <form className="admin-card admin-update-form" onSubmit={save}>
+            <h2>
+              <UserCog size={18} aria-hidden="true" />
+              Datos del usuario
+            </h2>
+            <label>
+              Número de cuenta
+              <input
+                value={selectedUser?.numero_cuenta ?? ""}
+                disabled
+                readOnly
+              />
+            </label>
+            <label>
+              Nombre
+              <input
+                value={name}
+                required
+                disabled={!selectedUser}
+                onChange={(event) => {
+                  setName(event.target.value);
                   setSaved(false);
-                }
-              }}
+                }}
+              />
+            </label>
+            <label>
+              Correo
+              <input
+                type="email"
+                value={email}
+                disabled={!selectedUser}
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                  setSaved(false);
+                }}
+              />
+            </label>
+            <label>
+              Rol
+              <select
+                value={role}
+                disabled={!selectedUser}
+                onChange={(event) => {
+                  const nextRole = event.target.value;
+                  if (isAdminUserRole(nextRole)) {
+                    setRole(nextRole);
+                    setSaved(false);
+                  }
+                }}
+              >
+                {roles.map((userRole) => (
+                  <option key={userRole} value={userRole}>
+                    {userRole}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {error && (
+              <p
+                className="admin-update-message admin-update-error"
+                role="alert"
+              >
+                <CircleAlert size={14} aria-hidden="true" />
+                {error}
+              </p>
+            )}
+            {saved && !error && (
+              <p
+                className="admin-update-message admin-update-success"
+                role="status"
+              >
+                <CircleCheck size={14} aria-hidden="true" />
+                Cambios guardados
+              </p>
+            )}
+            <Button
+              type="submit"
+              disabled={
+                saving || loading || Boolean(loadError) || !selectedUser
+              }
             >
-              {roles.map((userRole) => (
-                <option key={userRole} value={userRole}>
-                  {userRole}
-                </option>
-              ))}
-            </select>
-          </label>
-          {error && (
-            <p className="admin-update-message admin-update-error" role="alert">
-              <CircleAlert size={14} aria-hidden="true" />
-              {error}
+              <Save />
+              {saving ? "Guardando..." : "Guardar cambios"}
+            </Button>
+          </form>
+
+          <section className="admin-card admin-update-form">
+            <h2>
+              <ToggleRight size={18} aria-hidden="true" />
+              Estado del usuario
+            </h2>
+            <p className="admin-update-state-current">
+              Estado actual:{" "}
+              <strong>
+                {selectedUser?.activo ? "Activo" : "Inactivo"}
+              </strong>
             </p>
-          )}
-          {saved && !error && (
-            <p className="admin-update-message admin-update-success" role="status">
-              <CircleCheck size={14} aria-hidden="true" />
-              Cambios guardados
+            <div
+              className="admin-update-state-options"
+              role="radiogroup"
+              aria-label="Estado del usuario"
+            >
+              <button
+                type="button"
+                role="radio"
+                aria-checked={activeStatus}
+                className={
+                  activeStatus
+                    ? "admin-update-state-option is-active"
+                    : "admin-update-state-option"
+                }
+                disabled={!selectedUser || savingStatus}
+                onClick={() => {
+                  setActiveStatus(true);
+                  setStatusError("");
+                  setStatusSaved(false);
+                }}
+              >
+                <i aria-hidden="true" />
+                Activo
+              </button>
+              <button
+                type="button"
+                role="radio"
+                aria-checked={!activeStatus}
+                className={
+                  !activeStatus
+                    ? "admin-update-state-option is-inactive"
+                    : "admin-update-state-option"
+                }
+                disabled={!selectedUser || savingStatus}
+                onClick={() => {
+                  setActiveStatus(false);
+                  setStatusError("");
+                  setStatusSaved(false);
+                }}
+              >
+                <i aria-hidden="true" />
+                Inactivo
+              </button>
+            </div>
+            <p className="admin-update-state-hint">
+              {activeStatus
+                ? "El usuario puede ingresar a la plataforma."
+                : "El usuario no podrá ingresar hasta que se active de nuevo."}
             </p>
-          )}
-          <Button
-            type="submit"
-            disabled={saving || loading || Boolean(loadError) || !selectedUser}
+            {statusError && (
+              <p
+                className="admin-update-message admin-update-error"
+                role="alert"
+              >
+                <CircleAlert size={14} aria-hidden="true" />
+                {statusError}
+              </p>
+            )}
+            {statusSaved && !statusError && (
+              <p
+                className="admin-update-message admin-update-success"
+                role="status"
+              >
+                <CircleCheck size={14} aria-hidden="true" />
+                Estado actualizado
+              </p>
+            )}
+            <Button
+              type="button"
+              disabled={
+                savingStatus ||
+                loading ||
+                Boolean(loadError) ||
+                !selectedUser ||
+                selectedUser.activo === activeStatus
+              }
+              onClick={saveStatus}
+            >
+              <Save />
+              {savingStatus ? "Guardando..." : "Guardar estado"}
+            </Button>
+          </section>
+
+          <form
+            className="admin-card admin-update-form"
+            onSubmit={saveNewNip}
           >
-            <Save />
-            {saving ? "Guardando..." : "Guardar cambios"}
-          </Button>
-        </form>
+            <h2>
+              <KeyRound size={18} aria-hidden="true" />
+              Asignar NIP nuevo
+            </h2>
+            <p className="admin-update-state-hint">
+              Asigna un NIP nuevo a {selectedUser?.nombre ?? "este usuario"}.
+              Acepta cualquier carácter.
+            </p>
+            <label>
+              NIP nuevo
+              <input
+                type="password"
+                autoComplete="new-password"
+                value={newNip}
+                disabled={!selectedUser}
+                onChange={(event) => {
+                  setNewNip(event.target.value);
+                  setNipError("");
+                  setNipSaved(false);
+                }}
+              />
+            </label>
+            {nipError && (
+              <p
+                className="admin-update-message admin-update-error"
+                role="alert"
+              >
+                <CircleAlert size={14} aria-hidden="true" />
+                {nipError}
+              </p>
+            )}
+            {nipSaved && !nipError && (
+              <p
+                className="admin-update-message admin-update-success"
+                role="status"
+              >
+                <CircleCheck size={14} aria-hidden="true" />
+                NIP asignado
+              </p>
+            )}
+            <Button
+              type="submit"
+              disabled={
+                resettingNip ||
+                loading ||
+                Boolean(loadError) ||
+                !selectedUser
+              }
+            >
+              <Save />
+              {resettingNip ? "Asignando..." : "Asignar nuevo NIP"}
+            </Button>
+          </form>
+        </div>
       </div>
 
       <p className="admin-update-note">

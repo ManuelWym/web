@@ -40,6 +40,12 @@
   gap: 1.25rem;
 }
 
+.admin-update-forms {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
 .admin-update-user-panel {
   display: grid;
   gap: 0.75rem;
@@ -71,9 +77,11 @@
 }
 
 .admin-update-user-list {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: 0.875rem;
+  display: grid;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--background);
 }
 
 .admin-update-pagination {
@@ -118,7 +126,7 @@
   outline-offset: -2px;
 }
 
-.admin-update-user-list button > span:last-child {
+.admin-update-user-info {
   display: grid;
   min-width: 0;
   gap: 0.2rem;
@@ -126,6 +134,26 @@
 
 .admin-update-user-list small {
   color: var(--color-text-muted);
+}
+
+.admin-update-user-status {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: 0.2rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.admin-update-user-status.is-active {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.admin-update-user-status.is-inactive {
+  color: #991b1b;
+  background: #fee2e2;
 }
 
 .admin-update-avatar {
@@ -172,6 +200,64 @@
 
 .admin-update-form input:disabled {
   background: var(--muted);
+}
+
+.admin-update-state-current,
+.admin-update-state-hint {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.admin-update-state-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-update-state-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--foreground);
+  background: var(--background);
+  cursor: pointer;
+  font: inherit;
+}
+
+.admin-update-state-option:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.admin-update-state-option i {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  background: var(--muted-foreground);
+}
+
+.admin-update-state-option.is-active {
+  border-color: #16a34a;
+  color: #166534;
+  background: #f0fdf4;
+}
+
+.admin-update-state-option.is-active i {
+  background: #16a34a;
+}
+
+.admin-update-state-option.is-inactive {
+  border-color: #dc2626;
+  color: #991b1b;
+  background: #fef2f2;
+}
+
+.admin-update-state-option.is-inactive i {
+  background: #dc2626;
 }
 
 .admin-update-message {
