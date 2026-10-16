@@ -349,6 +349,8 @@
 }
 
 .campus-dialog-actions button {
+  min-height: 2.5rem;
+  padding: 0.6rem 1rem;
   gap: 0.4rem;
 }
 

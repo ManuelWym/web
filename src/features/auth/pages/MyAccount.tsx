@@ -20,6 +20,24 @@ export function MyAccount() {
   const navigate = useNavigate();
   const [profile] = useState(loadAccountProfile);
   const [role, setRole] = useState(loadAccountRole);
+  const profileFields: [string, string][] = profile
+    ? [
+        ["ID", profile.id],
+        ["Nombre", profile.name],
+        ["Matrícula", profile.accountNumber],
+        ["Correo", profile.email],
+        ["Teléfono", profile.phone],
+        ["Rol de cuenta", profile.role],
+        [
+          "Estado",
+          profile.isActive === null
+            ? "No disponible"
+            : profile.isActive
+              ? "Activa"
+              : "Inactiva",
+        ],
+      ]
+    : [];
 
   const handleRoleChange = (nextRole: AccountRole) => {
     setRole(nextRole);
@@ -31,17 +49,12 @@ export function MyAccount() {
       <header className="account-page-heading">
         <div className="account-eyebrow">/ME</div>
         <h1>Mi cuenta</h1>
-        <p>Tu rol define el panel que verás.</p>
+        <p>Consulta los datos asociados a tu cuenta.</p>
       </header>
 
       {profile ? (
         <dl className="account-profile-data">
-          {[
-            ["ID", profile.id],
-            ["Nombre", profile.name],
-            ["Matrícula", profile.accountNumber],
-            ["Rol", role],
-          ].map(([label, value]) => (
+          {profileFields.map(([label, value]) => (
             <div key={label}>
               <dt>{label}</dt>
               <dd>{value}</dd>
@@ -54,6 +67,9 @@ export function MyAccount() {
         </p>
       )}
 
+      <p className="account-role-description">
+        Selecciona un panel para probar la experiencia de cada tipo de usuario.
+      </p>
       <AccountRoleSelector role={role} onChange={handleRoleChange} />
       <Button
         className="account-dashboard-button"

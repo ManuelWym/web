@@ -15,7 +15,8 @@
 }
 
 .account-page-heading p,
-.account-sample-note {
+.account-sample-note,
+.account-role-description {
   color: var(--color-text-muted);
 }
 
@@ -88,6 +89,11 @@
 
 .account-sample-note {
   margin-top: 1rem;
+  font-size: 0.875rem;
+}
+
+.account-role-description {
+  margin: 1.5rem 0 0.5rem;
   font-size: 0.875rem;
 }
 
