@@ -1,7 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router";
 import logoAula from "@/assets/LogoAulaUas.png";
-
+import { Eye, EyeOff } from 'lucide-react';
 import "./Login.css";
 import { login } from "@/features/auth/services/LoginService";
 import { getDashboardRouteByRole } from "@/features/auth/services/DashboardRouteService";
@@ -10,8 +10,20 @@ interface LoginProps {
   onAuthenticated: (token: string) => void;
 }
 
+
+
+
 export function Login({ onAuthenticated }: LoginProps) {
   const navigate = useNavigate();
+
+    // 1. Estado para controlar la visibilidad
+  const [showPassword, setShowPassword] = useState(false);
+  const [password, setPassword] = useState('');
+
+  // 2. Función para alternar el estado
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevState) => !prevState);
+  };
 
   // Estado para controlar los campos del formulario
   const [formData, setFormData] = useState({
@@ -38,6 +50,8 @@ export function Login({ onAuthenticated }: LoginProps) {
   // Manejar el cambio en los inputs y ocultar errores/alertas activas
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
+    setPassword(e.target.value)
 
     setFormData((prev) => ({
       ...prev,
@@ -85,7 +99,20 @@ export function Login({ onAuthenticated }: LoginProps) {
       const data = await login(formData.matricula.trim(), formData.nip);
 
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      const { id, numero_cuenta, nombre, correo, rol, telefono, activo } =
+        data.user;
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          id,
+          numero_cuenta,
+          nombre,
+          correo,
+          rol,
+          telefono,
+          activo,
+        }),
+      );
       localStorage.removeItem("aula-role");
       onAuthenticated(data.token);
 
@@ -166,17 +193,30 @@ export function Login({ onAuthenticated }: LoginProps) {
               <label className="form-label" htmlFor="nip">
                 NIP
               </label>
-              <input
-                id="nip"
-                name="nip"
-                type="password"
-                className={`form-input ${errors.nip ? "is-error" : ""}`}
-                value={formData.nip}
-                onChange={handleChange}
-                placeholder="Ingrese su NIP"
-                autoComplete="current-password"
-                required
-              />
+              <div className="nip-input-wrapper">
+                <input
+                  id="nip"
+                  name="nip"
+                  type={showPassword ? "text" : "password"}
+                  className={`form-input ${errors.nip ? "is-error" : ""}`}
+                  value={formData.nip && password}
+                  onChange={handleChange}
+                  placeholder="Ingrese su NIP"
+                  autoComplete="current-password"
+                  required
+                />
+                <button
+                  id="boton-nip"
+                  className="nip-visibility-button"
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  aria-label={
+                    showPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+                  }
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
               <span className={`form-error ${errors.nip ? "visible" : ""}`}>
                 El NIP es obligatorio.
               </span>

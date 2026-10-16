@@ -120,6 +120,39 @@
   transition: border-color var(--transition);
 }
 
+.nip-input-wrapper {
+  position: relative;
+}
+
+.nip-input-wrapper .form-input {
+  padding-right: 2.5rem;
+}
+
+.nip-visibility-button {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.nip-visibility-button:hover {
+  color: var(--uas-blue);
+}
+
+.nip-visibility-button:focus-visible {
+  border-radius: var(--radius-sm);
+  outline: 2px solid var(--uas-blue);
+  outline-offset: 2px;
+}
+
 .form-input::placeholder {
   color: #9ca3af;
 }

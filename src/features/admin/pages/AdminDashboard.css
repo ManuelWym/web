@@ -18,6 +18,45 @@
   color: var(--color-text-muted);
 }
 
+.admin-card h2 {
+  margin: 0;
+  color: var(--uas-blue);
+  font-size: 1.125rem;
+}
+
+.admin-card > p {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.admin-csv-example,
+.admin-import-report {
+  overflow-x: auto;
+  margin: 0;
+  padding: 0.875rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--foreground);
+  background: var(--muted);
+  font: 0.8rem/1.5 ui-monospace, monospace;
+  white-space: pre;
+}
+
+.admin-import-form {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem 1rem;
+}
+
+.admin-file-name {
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .admin-eyebrow {
   color: var(--uas-mostaza);
   font-size: 0.75rem;
@@ -34,6 +73,74 @@
   border-radius: var(--radius-md);
   background: var(--background);
   box-shadow: 0 8px 24px rgb(8 33 84 / 6%);
+}
+
+.admin-user-form,
+.admin-user-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  align-items: end;
+  gap: 1rem;
+}
+
+.admin-user-form label,
+.admin-user-filters label {
+  display: grid;
+  gap: 0.4rem;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.admin-user-form input,
+.admin-user-form select,
+.admin-user-filters input,
+.admin-user-filters select {
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--foreground);
+  background: var(--background);
+  font: inherit;
+}
+
+.admin-user-filters {
+  grid-template-columns: minmax(220px, 2fr) repeat(2, minmax(140px, 1fr)) auto;
+}
+
+.admin-search {
+  min-width: 0;
+}
+
+.admin-form-error,
+.admin-success {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.admin-form-error {
+  color: var(--color-error);
+}
+
+.admin-success {
+  color: var(--uas-blue);
+}
+
+.admin-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.admin-pagination > div {
+  display: flex;
+  gap: 0.5rem;
 }
 
 .admin-file {
@@ -55,7 +162,13 @@
 }
 
 .admin-file-input {
-  display: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
 }
 
 .admin-file-error {
@@ -140,4 +253,14 @@
 
 .admin-sample-note {
   text-align: center;
+}
+
+@media (max-width: 700px) {
+  .admin-user-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-import-form {
+    grid-template-columns: 1fr;
+  }
 }
