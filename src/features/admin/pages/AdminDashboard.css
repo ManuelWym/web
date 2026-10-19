@@ -29,8 +29,7 @@
   color: var(--color-text-muted);
 }
 
-.admin-csv-example,
-.admin-import-report {
+.admin-csv-example {
   overflow-x: auto;
   margin: 0;
   padding: 0.875rem;
@@ -40,6 +39,44 @@
   background: var(--muted);
   font: 0.8rem/1.5 ui-monospace, monospace;
   white-space: pre;
+}
+
+.admin-import-summary {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.admin-import-summary h3 {
+  margin: 0;
+  color: var(--uas-blue);
+  font-size: 1rem;
+}
+
+.admin-import-summary dl {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.admin-import-summary dl > div {
+  display: grid;
+  grid-template-columns: minmax(9rem, auto) minmax(0, 1fr);
+  gap: 0.5rem 1rem;
+}
+
+.admin-import-summary dt {
+  font-weight: 600;
+}
+
+.admin-import-summary dd {
+  min-width: 0;
+  margin: 0;
+}
+
+.admin-import-summary ul {
+  margin: 0;
+  padding-left: 1.25rem;
 }
 
 .admin-import-form {
