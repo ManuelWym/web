@@ -1,9 +1,9 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import { AdminDashboard } from "@/features/admin/pages/AdminDashboard";
 import { AdminUpdate } from "@/features/admin/pages/AdminUpdate";
-import { DashboardEstudiante } from "@/features/customer/pages/DashboardEstudiante";
-import { CampusFeaturePage } from "@/features/customer/pages/CampusFeaturePage";
-import { ProviderDashboard } from "@/features/provider/pages/ProviderDashboard";
+import { DashboardEstudiante } from "@/features/alumno/pages/DashboardEstudiante";
+import { CampusFeaturePage } from "@/features/shared/pages/CampusFeaturePage";
+import { ProviderDashboard } from "@/features/docente/pages/ProviderDashboard";
 import { ChangeNip } from "@/features/auth/pages/ChangeNip";
 import { Profile } from "@/features/auth/pages/Profile";
 import { AdminLayout } from "@/layouts/AdminLayout";

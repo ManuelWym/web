@@ -6,6 +6,8 @@ import "./Login.css";
 import { login } from "@/features/auth/services/LoginService";
 import { getDashboardRouteByRole } from "@/features/auth/services/DashboardRouteService";
 
+const currentYear = new Date().getFullYear();
+
 interface LoginProps {
   onAuthenticated: (token: string) => void;
 }
@@ -145,7 +147,7 @@ export function Login({ onAuthenticated }: LoginProps) {
           </p>
         </div>
         <div className="login-left-footer">
-          &copy; {new Date().getFullYear()} Universidad Autónoma de Sinaloa.
+          &copy; {currentYear} Universidad Autónoma de Sinaloa.
         </div>
       </div>
 

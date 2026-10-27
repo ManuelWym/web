@@ -1,4 +1,7 @@
-import type { ImportResult, UserImportRow } from "@/features/admin/types/UserImport";
+import type {
+  ImportResult,
+  UserImportRow,
+} from "@/features/admin/types/UserImport";
 
 const existingEmails = ["alex.villa@ejemplo.edu", "laura.mendez@ejemplo.edu"];
 const validRoles = ["estudiante", "docente", "administrador"];

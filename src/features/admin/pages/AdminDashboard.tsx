@@ -287,9 +287,7 @@ export function AdminDashboard() {
           {(() => {
             const reportEntries = Object.entries(importStatus).filter(
               ([key]) =>
-                !["id", "estado", "mensaje", ...createdUsersKeys].includes(
-                  key,
-                ),
+                !["id", "estado", "mensaje", ...createdUsersKeys].includes(key),
             );
 
             if (reportEntries.length === 0) return null;
@@ -298,40 +296,39 @@ export function AdminDashboard() {
               <div className="admin-import-summary">
                 <h3>Resumen de importación</h3>
                 <dl>
-                  {reportEntries
-                    .map(([key, value]) => (
-                      <div key={key}>
-                        <dt>{formatImportReportKey(key)}</dt>
-                        <dd>
-                          {Array.isArray(value) ? (
-                            value.length ? (
-                              <ul>
-                                {value.map((item, index) => (
-                                  <li key={`${key}-${index}`}>
-                                    {formatImportReportItem(item)}
-                                  </li>
-                                ))}
-                              </ul>
-                            ) : (
-                              "Ninguno"
-                            )
-                          ) : isRecord(value) ? (
+                  {reportEntries.map(([key, value]) => (
+                    <div key={key}>
+                      <dt>{formatImportReportKey(key)}</dt>
+                      <dd>
+                        {Array.isArray(value) ? (
+                          value.length ? (
                             <ul>
-                              {Object.entries(value).map(
-                                ([detailKey, detailValue]) => (
-                                  <li key={detailKey}>
-                                    {formatImportReportKey(detailKey)}{" "}
-                                    {formatImportReportItem(detailValue)}
-                                  </li>
-                                ),
-                              )}
+                              {value.map((item, index) => (
+                                <li key={`${key}-${index}`}>
+                                  {formatImportReportItem(item)}
+                                </li>
+                              ))}
                             </ul>
                           ) : (
-                            String(value)
-                          )}
-                        </dd>
-                      </div>
-                    ))}
+                            "Ninguno"
+                          )
+                        ) : isRecord(value) ? (
+                          <ul>
+                            {Object.entries(value).map(
+                              ([detailKey, detailValue]) => (
+                                <li key={detailKey}>
+                                  {formatImportReportKey(detailKey)}{" "}
+                                  {formatImportReportItem(detailValue)}
+                                </li>
+                              ),
+                            )}
+                          </ul>
+                        ) : (
+                          String(value)
+                        )}
+                      </dd>
+                    </div>
+                  ))}
                 </dl>
               </div>
             );
