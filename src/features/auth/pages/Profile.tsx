@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { fetchAccountProfile } from "@/features/auth/services/AccountProfileService";
 import { getSavedCampusRole } from "@/features/auth/services/CampusRoleService";
 import type { AccountProfile } from "@/features/auth/types/AccountProfile";
+import type { UserRole } from "@/features/auth/types/User";
 import "./Profile.css";
 
 function getInitials(name: string): string {
@@ -20,19 +21,14 @@ function getInitials(name: string): string {
   );
 }
 
-function getRoleLabel(role: string): string {
-  switch (role.trim().toLowerCase()) {
+function getRoleLabel(role: UserRole | "No disponible"): string {
+  switch (role) {
     case "alumno":
-    case "estudiante":
-    case "student":
-      return "Estudiante";
+      return "Alumno";
     case "docente":
-    case "profesor":
-    case "teacher":
       return "Docente";
-    case "administrador":
     case "admin":
-      return "Administrador";
+      return "Admin";
     default:
       return role;
   }

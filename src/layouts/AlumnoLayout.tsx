@@ -1,5 +1,5 @@
 import { Outlet } from "react-router";
 
-export function ProviderLayout() {
+export function AlumnoLayout() {
   return <Outlet />;
 }

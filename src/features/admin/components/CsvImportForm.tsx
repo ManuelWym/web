@@ -34,7 +34,7 @@ export function CsvImportForm({
         El archivo debe incluir las columnas{" "}
         <code>numero_cuenta,nombre,rol,nip,correo</code>. El correo es
         opcional; usa <code>alumno</code>, <code>docente</code> o{" "}
-        <code>administrador</code> para el rol. El número de cuenta admite
+        <code>admin</code> para el rol. El número de cuenta admite
         hasta 20 caracteres, el nombre hasta 100 y el NIP debe tener de 4 a 6
         letras o números, sin espacios ni símbolos.
       </p>
