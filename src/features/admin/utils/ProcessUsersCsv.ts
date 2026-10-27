@@ -4,7 +4,7 @@ import type {
 } from "@/features/admin/types/UserImport";
 
 const existingEmails = ["alex.villa@ejemplo.edu", "laura.mendez@ejemplo.edu"];
-const validRoles = ["estudiante", "docente", "administrador"];
+const validRoles = ["alumno", "docente", "admin"];
 const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
 export function processUsersCsv(text: string): ImportResult {

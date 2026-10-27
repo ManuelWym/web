@@ -13,22 +13,22 @@ export function AccountRoleSelector({
   return (
     <div className="account-role-tabs" aria-label="Rol de prueba">
       <button
-        className={role === "estudiante" ? "active" : ""}
+        className={role === "alumno" ? "active" : ""}
         type="button"
-        aria-pressed={role === "estudiante"}
-        onClick={() => onChange("estudiante")}
+        aria-pressed={role === "alumno"}
+        onClick={() => onChange("alumno")}
       >
         <GraduationCap size={16} />
-        Estudiante
+        Alumno
       </button>
       <button
-        className={role === "administrador" ? "active" : ""}
+        className={role === "admin" ? "active" : ""}
         type="button"
-        aria-pressed={role === "administrador"}
-        onClick={() => onChange("administrador")}
+        aria-pressed={role === "admin"}
+        onClick={() => onChange("admin")}
       >
         <ShieldCheck size={16} />
-        Administrador
+        Admin
       </button>
     </div>
   );

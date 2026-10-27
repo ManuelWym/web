@@ -1,6 +1,6 @@
-import type { AccountRole } from "./User";
+import type { UserRole } from "./User";
 
-export type AccountDashboardRole = "estudiante" | "administrador";
+export type AccountDashboardRole = "alumno" | "admin";
 
 export interface AccountProfile {
   id: string;
@@ -8,6 +8,6 @@ export interface AccountProfile {
   accountNumber: string;
   email: string;
   phone: string;
-  role: AccountRole | "No disponible";
+  role: UserRole | "No disponible";
   isActive: boolean | null;
 }

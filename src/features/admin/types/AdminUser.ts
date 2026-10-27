@@ -1,4 +1,6 @@
-export type AdminUserRole = "administrador" | "docente" | "alumno";
+import type { UserRole } from "@/features/auth/types/User";
+
+export type AdminUserRole = UserRole;
 export type UserStatusFilter = "activo" | "inactivo";
 
 export interface AdminUser {
@@ -6,7 +8,7 @@ export interface AdminUser {
   numero_cuenta: string;
   nombre: string;
   correo: string;
-  rol: AdminUserRole | string;
+  rol: AdminUserRole;
   activo: boolean;
   telefono?: string | null;
 }

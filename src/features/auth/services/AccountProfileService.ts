@@ -3,13 +3,16 @@ import type {
   AccountDashboardRole,
   AccountProfile,
 } from "@/features/auth/types/AccountProfile";
-import { normalizeCampusRole } from "@/features/auth/services/CampusRoleService";
+import type { UserRole } from "@/features/auth/types/User";
 import type { ApiErrorResponse } from "@/features/auth/types/ApiErrorResponse";
 import { apiClient } from "@/services/ApiClient";
 
 const roleStorageKey = "aula-role";
 
-function toAccountProfile(user: unknown): AccountProfile | null {
+function toAccountProfile(
+  user: unknown,
+  getRole: (role: unknown) => UserRole | "No disponible",
+): AccountProfile | null {
   if (typeof user !== "object" || user === null) return null;
 
   const record = user as Record<string, unknown>;
@@ -28,24 +31,31 @@ function toAccountProfile(user: unknown): AccountProfile | null {
     email: typeof record.correo === "string" ? record.correo : "No disponible",
     phone:
       typeof record.telefono === "string" ? record.telefono : "No disponible",
-    role: getAccountRole(record.rol),
+    role: getRole(record.rol),
     isActive: typeof record.activo === "boolean" ? record.activo : null,
   };
 }
 
-function getAccountRole(role: unknown): AccountProfile["role"] {
+function getApiAccountRole(role: unknown): AccountProfile["role"] {
   if (typeof role !== "string") return "No disponible";
 
-  switch (normalizeCampusRole(role)) {
-    case "student":
+  // The profile API uses "administrador"; the app represents that role as "admin".
+  switch (role) {
+    case "alumno":
       return "alumno";
-    case "teacher":
+    case "docente":
       return "docente";
-    case "admin":
-      return "administrador";
+    case "administrador":
+      return "admin";
     default:
       return "No disponible";
   }
+}
+
+function getStoredAccountRole(role: unknown): AccountProfile["role"] {
+  return role === "alumno" || role === "docente" || role === "admin"
+    ? role
+    : "No disponible";
 }
 
 export function loadAccountProfile(): AccountProfile | null {
@@ -53,7 +63,7 @@ export function loadAccountProfile(): AccountProfile | null {
   if (!serializedUser) return null;
 
   try {
-    return toAccountProfile(JSON.parse(serializedUser));
+    return toAccountProfile(JSON.parse(serializedUser), getStoredAccountRole);
   } catch (error) {
     console.error("No se pudo leer el perfil guardado del usuario:", error);
     return null;
@@ -79,7 +89,7 @@ export async function fetchAccountProfile(): Promise<AccountProfile> {
             "data" in payload
           ? payload.data
           : payload;
-    const profile = toAccountProfile(profileData);
+    const profile = toAccountProfile(profileData, getApiAccountRole);
 
     if (!profile) {
       throw new Error("La respuesta de la API no contiene un perfil válido.");
@@ -105,7 +115,7 @@ export async function fetchAccountProfile(): Promise<AccountProfile> {
 
 export function loadAccountRole(): AccountDashboardRole {
   const savedRole = localStorage.getItem(roleStorageKey);
-  if (savedRole === "administrador" || savedRole === "estudiante") {
+  if (savedRole === "admin" || savedRole === "alumno") {
     return savedRole;
   }
 
@@ -118,16 +128,16 @@ export function loadAccountRole(): AccountDashboardRole {
         user !== null &&
         "rol" in user &&
         typeof user.rol === "string" &&
-        ["administrador", "admin"].includes(user.rol.trim().toLowerCase())
+        user.rol === "admin"
       ) {
-        return "administrador";
+        return "admin";
       }
     } catch (error) {
       console.error("No se pudo leer el rol guardado del usuario:", error);
     }
   }
 
-  return "estudiante";
+  return "alumno";
 }
 
 export function saveAccountRole(role: AccountDashboardRole): void {

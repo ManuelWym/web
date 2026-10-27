@@ -1,15 +1,15 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import { AdminDashboard } from "@/features/admin/pages/AdminDashboard";
 import { AdminUpdate } from "@/features/admin/pages/AdminUpdate";
-import { DashboardEstudiante } from "@/features/alumno/pages/DashboardEstudiante";
+import { DashboardAlumno } from "@/features/alumno/pages/DashboardAlumno";
 import { CampusFeaturePage } from "@/features/shared/pages/CampusFeaturePage";
-import { ProviderDashboard } from "@/features/docente/pages/ProviderDashboard";
+import { DocenteDashboard } from "@/features/docente/pages/DocenteDashboard";
 import { ChangeNip } from "@/features/auth/pages/ChangeNip";
 import { Profile } from "@/features/auth/pages/Profile";
 import { AdminLayout } from "@/layouts/AdminLayout";
 import { AuthLayout } from "@/layouts/AuthLayout";
-import { CustomerLayout } from "@/layouts/CustomerLayout";
-import { ProviderLayout } from "@/layouts/ProviderLayout";
+import { AlumnoLayout } from "@/layouts/AlumnoLayout";
+import { DocenteLayout } from "@/layouts/DocenteLayout";
 import { CampusHomeRoute } from "@/routes/CampusHomeRoute";
 import { LoginRoute } from "@/routes/LoginRoute";
 import { ProtectedRoute } from "@/routes/ProtectedRoute";
@@ -59,7 +59,7 @@ export const router = createBrowserRouter([
           },
           {
             element: (
-              <RoleProtectedRoute allowedRoles={["student", "teacher"]} />
+              <RoleProtectedRoute allowedRoles={["alumno", "docente"]} />
             ),
             children: [
               {
@@ -74,22 +74,22 @@ export const router = createBrowserRouter([
             ],
           },
           {
-            element: <RoleProtectedRoute allowedRoles={["student"]} />,
+            element: <RoleProtectedRoute allowedRoles={["alumno"]} />,
             children: [
               {
-                path: "estudiante",
-                element: <CustomerLayout />,
-                children: [{ index: true, element: <DashboardEstudiante /> }],
+                path: "alumno",
+                element: <AlumnoLayout />,
+                children: [{ index: true, element: <DashboardAlumno /> }],
               },
             ],
           },
           {
-            element: <RoleProtectedRoute allowedRoles={["teacher"]} />,
+            element: <RoleProtectedRoute allowedRoles={["docente"]} />,
             children: [
               {
-                path: "profesor",
-                element: <ProviderLayout />,
-                children: [{ index: true, element: <ProviderDashboard /> }],
+                path: "docente",
+                element: <DocenteLayout />,
+                children: [{ index: true, element: <DocenteDashboard /> }],
               },
             ],
           },
@@ -103,11 +103,6 @@ export const router = createBrowserRouter([
                   { index: true, element: <AdminDashboard /> },
                   { path: "update", element: <AdminUpdate /> },
                 ],
-              },
-              {
-                path: "administrador",
-                element: <AdminLayout />,
-                children: [{ index: true, element: <AdminDashboard /> }],
               },
             ],
           },

@@ -24,11 +24,11 @@ import "./CampusShell.css";
 function getCampusRoleLabel(role: CampusRole | null): string {
   switch (role) {
     case "admin":
-      return "Administrador";
-    case "teacher":
-      return "Profesor";
-    case "student":
-      return "Estudiante";
+      return "Admin";
+    case "docente":
+      return "Docente";
+    case "alumno":
+      return "Alumno";
     default:
       return "Usuario del campus";
   }
@@ -186,7 +186,7 @@ export function CampusShell({ children, onLogout }: CampusShellProps) {
                   onClick={() => setMenuOpen(false)}
                 >
                   <GraduationCap aria-hidden="true" />
-                  <span>Panel de administrador</span>
+                  <span>Panel de admin</span>
                   <ChevronRight aria-hidden="true" />
                 </Link>
               )}

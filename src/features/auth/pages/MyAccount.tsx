@@ -15,8 +15,8 @@ import type {
 import "./MyAccount.css";
 
 const dashboards: Record<AccountDashboardRole, string> = {
-  estudiante: "/estudiante",
-  administrador: "/admin",
+  alumno: "/alumno",
+  admin: "/admin",
 };
 
 export function MyAccount() {
