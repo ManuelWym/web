@@ -1,8 +1,4 @@
-import {
-  AlertTriangle,
-  UserPlus,
-  UserX,
-} from "lucide-react";
+import { AlertTriangle, UserPlus, UserX } from "lucide-react";
 import type {
   ImportResult,
   ImportTab,
@@ -67,7 +63,11 @@ export function CsvImportResults({
 }: CsvImportResultsProps) {
   return (
     <section className="admin-card">
-      <div className="admin-tabs" role="tablist" aria-label="Resultados de carga">
+      <div
+        className="admin-tabs"
+        role="tablist"
+        aria-label="Resultados de carga"
+      >
         {tabs.map(({ key, label, icon: Icon }) => (
           <button
             key={key}
