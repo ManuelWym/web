@@ -113,6 +113,20 @@
   min-width: 0;
 }
 
+.admin-user-filter-actions {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.admin-update-users-button {
+  background: var(--uas-blue);
+  color: white;
+}
+
+.admin-update-users-button:hover {
+  background: color-mix(in srgb, var(--uas-blue) 85%, white);
+}
+
 .admin-form-error,
 .admin-success {
   grid-column: 1 / -1;

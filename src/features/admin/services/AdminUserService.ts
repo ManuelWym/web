@@ -4,6 +4,11 @@ import { apiClient } from "@/services/ApiClient";
 import type {
   CreateUserPayload,
   CreateUserResponse,
+  ResetUserNipPayload,
+  UpdateUserPayload,
+  UpdateUserResponse,
+  UpdateUserStatusPayload,
+  UpdateUserStatusResponse,
   UserListFilters,
   UsersPage,
 } from "@/features/admin/types/AdminUser";
@@ -66,6 +71,57 @@ export async function createUser(
     return response.data;
   } catch (error) {
     throw new Error(getApiErrorMessage(error, "No se pudo registrar el usuario"));
+  }
+}
+
+export async function updateUser(
+  id: number,
+  payload: UpdateUserPayload,
+): Promise<UpdateUserResponse> {
+  try {
+    const response = await apiClient.put<UpdateUserResponse>(
+      `/usuarios/${encodeURIComponent(id)}`,
+      payload,
+      { headers: getAuthorizationHeaders() },
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(getApiErrorMessage(error, "No se pudo actualizar el usuario"));
+  }
+}
+
+export async function updateUserStatus(
+  id: number,
+  payload: UpdateUserStatusPayload,
+): Promise<UpdateUserStatusResponse> {
+  try {
+    const response = await apiClient.patch<UpdateUserStatusResponse>(
+      `/usuarios/${encodeURIComponent(id)}/estado`,
+      payload,
+      { headers: getAuthorizationHeaders() },
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(
+      getApiErrorMessage(error, "No se pudo modificar el estado del usuario"),
+    );
+  }
+}
+
+export async function resetUserNip(
+  id: number,
+  payload: ResetUserNipPayload,
+): Promise<void> {
+  try {
+    await apiClient.post(
+      `/usuarios/${encodeURIComponent(id)}/restablecer-nip`,
+      payload,
+      { headers: getAuthorizationHeaders() },
+    );
+  } catch (error) {
+    throw new Error(
+      getApiErrorMessage(error, "No se pudo restablecer el NIP del usuario"),
+    );
   }
 }
 

@@ -112,6 +112,10 @@
   font-weight: 600;
 }
 
+.profile-change-nip-button {
+  margin-top: 1.25rem;
+}
+
 .profile-sample-note {
   margin-top: 1rem;
   font-size: 0.875rem;
