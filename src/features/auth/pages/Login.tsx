@@ -18,7 +18,7 @@ function obtenerRutaPorRol(rol: string): string {
       return "/profesor";
     case "administrador":
     case "admin":
-      return "/administrador";
+      return "/admin";
     default:
       return "/estudiante";
   }
@@ -104,6 +104,7 @@ export function Login({ onAuthenticated }: LoginProps) {
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.removeItem("aula-role");
       onAuthenticated(data.token);
 
       // Redirecciona según el rol retornado por la API

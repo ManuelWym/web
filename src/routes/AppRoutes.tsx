@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from "react-router";
 import { AdminDashboard } from "@/features/admin/pages/AdminDashboard";
 import { DashboardEstudiante } from "@/features/customer/pages/DashboardEstudiante";
 import { ProviderDashboard } from "@/features/provider/pages/ProviderDashboard";
+import { MyAccount } from "@/features/auth/pages/MyAccount";
 import { AdminLayout } from "@/layouts/AdminLayout";
 import { AuthLayout } from "@/layouts/AuthLayout";
 import { CustomerLayout } from "@/layouts/CustomerLayout";
@@ -26,6 +27,10 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute />,
         children: [
           {
+            path: "me",
+            element: <MyAccount />,
+          },
+          {
             path: "estudiante",
             element: <CustomerLayout />,
             children: [{ index: true, element: <DashboardEstudiante /> }],
@@ -34,6 +39,11 @@ export const router = createBrowserRouter([
             path: "profesor",
             element: <ProviderLayout />,
             children: [{ index: true, element: <ProviderDashboard /> }],
+          },
+          {
+            path: "admin",
+            element: <AdminLayout />,
+            children: [{ index: true, element: <AdminDashboard /> }],
           },
           {
             path: "administrador",
