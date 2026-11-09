@@ -20,7 +20,9 @@ import type {
 function getAuthorizationHeaders(): { Authorization: string } {
   const token = localStorage.getItem("token");
   if (!token) {
-    throw new Error("Tu sesión expiró. Inicia sesión para administrar usuarios.");
+    throw new Error(
+      "Tu sesión expiró. Inicia sesión para administrar usuarios.",
+    );
   }
 
   return { Authorization: `Bearer ${token}` };
@@ -47,7 +49,9 @@ function getApiErrorMessage(error: unknown, fallback: string): string {
   );
 }
 
-export async function listUsers(filters: UserListFilters = {}): Promise<UsersPage> {
+export async function listUsers(
+  filters: UserListFilters = {},
+): Promise<UsersPage> {
   try {
     const response = await apiClient.get<UsersPage>("/usuarios", {
       headers: getAuthorizationHeaders(),
@@ -55,7 +59,9 @@ export async function listUsers(filters: UserListFilters = {}): Promise<UsersPag
     });
     return response.data;
   } catch (error) {
-    throw new Error(getApiErrorMessage(error, "No se pudieron cargar los usuarios"));
+    throw new Error(
+      getApiErrorMessage(error, "No se pudieron cargar los usuarios"),
+    );
   }
 }
 
@@ -70,7 +76,9 @@ export async function createUser(
     );
     return response.data;
   } catch (error) {
-    throw new Error(getApiErrorMessage(error, "No se pudo registrar el usuario"));
+    throw new Error(
+      getApiErrorMessage(error, "No se pudo registrar el usuario"),
+    );
   }
 }
 
@@ -86,7 +94,9 @@ export async function updateUser(
     );
     return response.data;
   } catch (error) {
-    throw new Error(getApiErrorMessage(error, "No se pudo actualizar el usuario"));
+    throw new Error(
+      getApiErrorMessage(error, "No se pudo actualizar el usuario"),
+    );
   }
 }
 
@@ -125,7 +135,9 @@ export async function resetUserNip(
   }
 }
 
-export async function uploadUsersCsv(file: File): Promise<ImportUploadResponse> {
+export async function uploadUsersCsv(
+  file: File,
+): Promise<ImportUploadResponse> {
   const formData = new FormData();
   formData.append("archivo", file);
 

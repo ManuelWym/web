@@ -31,15 +31,13 @@ function isAdminUserRole(role: string): role is AdminUserRole {
 }
 
 function getInitials(name: string): string {
-  return (
-    name
-      .split(" ")
-      .filter(Boolean)
-      .map((part) => part[0])
-      .slice(0, 2)
-      .join("")
-      .toUpperCase()
-  );
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .map((part) => part[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
 }
 
 export function AdminUpdate() {
@@ -67,8 +65,7 @@ export function AdminUpdate() {
   const [nipSaved, setNipSaved] = useState(false);
   const selectedUserIdRef = useRef<number | null>(null);
 
-  const selectedUser =
-    users.find((user) => user.id === selectedUserId) ?? null;
+  const selectedUser = users.find((user) => user.id === selectedUserId) ?? null;
 
   useEffect(() => {
     let isCurrentRequest = true;
@@ -79,10 +76,12 @@ export function AdminUpdate() {
         setUsers(response.data);
         setPagination(response.meta);
         const currentSelectedId = selectedUserIdRef.current;
-        const nextSelectedUser =
-          response.data.some((user) => user.id === currentSelectedId)
-            ? response.data.find((user) => user.id === currentSelectedId) ?? null
-            : (response.data[0] ?? null);
+        const nextSelectedUser = response.data.some(
+          (user) => user.id === currentSelectedId,
+        )
+          ? (response.data.find((user) => user.id === currentSelectedId) ??
+            null)
+          : (response.data[0] ?? null);
         const nextSelectedUserId = nextSelectedUser?.id ?? null;
         selectedUserIdRef.current = nextSelectedUserId;
         setSelectedUserId(nextSelectedUserId);
@@ -204,7 +203,9 @@ export function AdminUpdate() {
       return;
     }
     if (selectedUser.activo === activeStatus) {
-      setStatusError(`El usuario ya está ${activeStatus ? "activo" : "inactivo"}.`);
+      setStatusError(
+        `El usuario ya está ${activeStatus ? "activo" : "inactivo"}.`,
+      );
       setStatusSaved(false);
       return;
     }
@@ -471,9 +472,7 @@ export function AdminUpdate() {
             </h2>
             <p className="admin-update-state-current">
               Estado actual:{" "}
-              <strong>
-                {selectedUser?.activo ? "Activo" : "Inactivo"}
-              </strong>
+              <strong>{selectedUser?.activo ? "Activo" : "Inactivo"}</strong>
             </p>
             <div
               className="admin-update-state-options"
@@ -558,10 +557,7 @@ export function AdminUpdate() {
             </Button>
           </section>
 
-          <form
-            className="admin-card admin-update-form"
-            onSubmit={saveNewNip}
-          >
+          <form className="admin-card admin-update-form" onSubmit={saveNewNip}>
             <h2>
               <KeyRound size={18} aria-hidden="true" />
               Asignar NIP nuevo
@@ -605,10 +601,7 @@ export function AdminUpdate() {
             <Button
               type="submit"
               disabled={
-                resettingNip ||
-                loading ||
-                Boolean(loadError) ||
-                !selectedUser
+                resettingNip || loading || Boolean(loadError) || !selectedUser
               }
             >
               <Save />
