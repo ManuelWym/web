@@ -1,31 +1,8 @@
 import { useState } from "react";
-import { Link, Outlet, useNavigate } from "react-router";
-import { logout } from "@/features/auth/services/LogoutService";
-import "./AuthLayout.css";
+import { Outlet } from "react-router";
 
 export function AuthLayout() {
-  const [token, setToken] = useState(() => localStorage.getItem("token"));
-  const navigate = useNavigate();
+  const [, setToken] = useState(() => localStorage.getItem("token"));
 
-  const handleLogout = async () => {
-    await logout();
-    setToken(null);
-    navigate("/login", { replace: true });
-  };
-
-  return (
-    <>
-      {token && (
-        <header className="inicio-header">
-          <Link className="account-header-link" to="/me">
-            Mi cuenta
-          </Link>
-          <button id="btn-logout" className="btn-logout" onClick={handleLogout}>
-            Cerrar sesión
-          </button>
-        </header>
-      )}
-      <Outlet context={setToken} />
-    </>
-  );
+  return <Outlet context={setToken} />;
 }

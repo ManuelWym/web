@@ -1,0 +1,399 @@
+.campus-shell {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  background: #f8fafc;
+}
+
+.campus-header {
+  position: sticky;
+  z-index: 10;
+  top: 0;
+  display: flex;
+  min-height: 4.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem clamp(1rem, 4vw, 3rem);
+  border-bottom: 1px solid #e5e7eb;
+  background: rgb(255 255 255 / 96%);
+  backdrop-filter: blur(12px);
+}
+
+.campus-header-left,
+.campus-header-right,
+.campus-brand,
+.campus-notification,
+.campus-footer-tagline {
+  display: flex;
+  align-items: center;
+}
+
+.campus-header-left,
+.campus-header-right {
+  gap: 1rem;
+}
+
+.campus-header-left > button {
+  color: var(--uas-blue);
+}
+
+.campus-brand {
+  gap: 0.05rem;
+  color: var(--uas-blue);
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: -0.08em;
+}
+
+.campus-brand:hover,
+.campus-avatar:hover,
+.campus-notification:hover {
+  text-decoration: none;
+}
+
+.campus-brand-mark {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  margin-right: 0.35rem;
+  place-items: center;
+  border-radius: 0.65rem;
+  background: #eef2ff;
+  color: var(--uas-blue);
+}
+
+.campus-brand-mark svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.campus-brand-dot {
+  color: var(--uas-gold);
+}
+
+.campus-header-divider {
+  width: 1px;
+  height: 1.65rem;
+  background: #d1d5db;
+}
+
+.campus-label {
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.campus-semester {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.campus-notification {
+  position: relative;
+  justify-content: center;
+  color: #475569;
+}
+
+.campus-notification svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.campus-notification i {
+  position: absolute;
+  top: -0.1rem;
+  right: -0.15rem;
+  width: 0.48rem;
+  height: 0.48rem;
+  border: 1px solid white;
+  border-radius: 50%;
+  background: #dc2626;
+}
+
+.campus-avatar {
+  display: inline-grid;
+  width: 2.35rem;
+  height: 2.35rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid #dbe3f0;
+  border-radius: 50%;
+  background: #eef2ff;
+  color: var(--uas-blue);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.campus-content {
+  width: 100%;
+  flex: 1;
+}
+
+.campus-feature-page {
+  width: min(100% - 2rem, 760px);
+  margin: 0 auto;
+  padding: 3rem 0;
+}
+
+.campus-feature-page h1 {
+  margin: 0.35rem 0 0.55rem;
+  color: var(--uas-blue);
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+}
+
+.campus-feature-page p {
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.campus-feature-eyebrow {
+  color: var(--uas-mostaza);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.campus-footer {
+  display: flex;
+  min-height: 3.8rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem clamp(1rem, 4vw, 3rem);
+  border-top: 1px solid #e5e7eb;
+  background: white;
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.campus-footer strong {
+  color: var(--uas-blue);
+}
+
+.campus-footer-tagline {
+  gap: 0.45rem;
+}
+
+.campus-footer-dot {
+  color: var(--uas-gold);
+}
+
+.campus-overlay {
+  position: fixed;
+  z-index: 40;
+  inset: 0;
+  background: rgb(15 23 42 / 45%);
+  animation: campus-overlay-in 160ms ease-out;
+}
+
+.campus-menu {
+  position: fixed;
+  z-index: 50;
+  inset: 0 auto 0 0;
+  display: flex;
+  width: min(22rem, calc(100vw - 2.5rem));
+  flex-direction: column;
+  padding: 1.5rem 1.1rem;
+  border: 0;
+  background: white;
+  box-shadow: 0 15px 50px rgb(15 23 42 / 20%);
+  animation: campus-menu-in 180ms ease-out;
+}
+
+.campus-menu-heading {
+  padding: 0.3rem 0.55rem 1.2rem;
+}
+
+.campus-menu-brand {
+  color: var(--uas-blue);
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: -0.08em;
+}
+
+.campus-menu-description {
+  margin-top: 0.2rem;
+  color: #64748b;
+  font-size: 0.82rem;
+}
+
+.campus-menu-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.9rem 0.55rem;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.campus-menu-user > div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.campus-menu-user strong {
+  color: #0f172a;
+  font-size: 0.9rem;
+}
+
+.campus-menu-user small {
+  color: #64748b;
+  font-size: 0.78rem;
+}
+
+.campus-menu-links {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.campus-menu-link {
+  display: flex;
+  min-height: 2.85rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.7rem;
+  border: 0;
+  border-radius: 0.55rem;
+  background: transparent;
+  color: #334155;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.88rem;
+  text-align: left;
+}
+
+.campus-menu-link:hover {
+  background: #f1f5f9;
+  text-decoration: none;
+}
+
+.campus-menu-link > svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex: 0 0 auto;
+  color: #64748b;
+}
+
+.campus-menu-link > span:nth-child(2) {
+  flex: 1;
+}
+
+.campus-menu-link > svg:last-child {
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.campus-count-pill {
+  display: inline-grid;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  place-items: center;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: var(--uas-blue);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.campus-menu-link.campus-logout-link {
+  margin-top: 0.55rem;
+  border-top: 1px solid #e5e7eb;
+  border-radius: 0;
+  color: #b91c1c;
+}
+
+.campus-logout-link > svg {
+  color: #b91c1c;
+}
+
+.campus-dialog-overlay {
+  z-index: 60;
+  background: rgb(15 23 42 / 55%);
+}
+
+.campus-logout-dialog {
+  position: fixed;
+  z-index: 70;
+  top: 50%;
+  left: 50%;
+  width: min(26rem, calc(100vw - 2rem));
+  padding: 1.5rem;
+  transform: translate(-50%, -50%);
+  border: 1px solid #e5e7eb;
+  border-radius: 0.85rem;
+  background: white;
+  box-shadow: 0 20px 60px rgb(15 23 42 / 25%);
+}
+
+.campus-dialog-title {
+  color: #0f172a;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.campus-dialog-description {
+  margin-top: 0.55rem;
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.campus-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.campus-dialog-actions button {
+  gap: 0.4rem;
+}
+
+@keyframes campus-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes campus-menu-in {
+  from {
+    transform: translateX(-0.7rem);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .campus-semester,
+  .campus-label,
+  .campus-header-divider {
+    display: none;
+  }
+
+  .campus-header-left,
+  .campus-header-right {
+    gap: 0.65rem;
+  }
+
+  .campus-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .campus-overlay,
+  .campus-menu {
+    animation: none;
+  }
+}

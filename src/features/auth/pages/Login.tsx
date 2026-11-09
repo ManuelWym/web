@@ -4,25 +4,7 @@ import logoAula from "@/assets/LogoAulaUas.png";
 
 import "./Login.css";
 import { login } from "@/features/auth/services/LoginService";
-
-/**
- * Retorna la ruta de React Router correspondiente al rol del usuario.
- */
-function obtenerRutaPorRol(rol: string): string {
-  switch (rol.trim().toLowerCase()) {
-    case "estudiante":
-    case "alumno":
-      return "/estudiante";
-    case "profesor":
-    case "docente":
-      return "/profesor";
-    case "administrador":
-    case "admin":
-      return "/admin";
-    default:
-      return "/estudiante";
-  }
-}
+import { getDashboardRouteByRole } from "@/features/auth/services/DashboardRouteService";
 
 interface LoginProps {
   onAuthenticated: (token: string) => void;
@@ -108,7 +90,7 @@ export function Login({ onAuthenticated }: LoginProps) {
       onAuthenticated(data.token);
 
       // Redirecciona según el rol retornado por la API
-      const rutaDestino = obtenerRutaPorRol(data.user.rol);
+      const rutaDestino = getDashboardRouteByRole(data.user.rol);
       navigate(rutaDestino, { replace: true });
     } catch (err: any) {
       setAlert({
