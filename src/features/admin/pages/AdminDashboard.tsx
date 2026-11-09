@@ -36,6 +36,52 @@ const roleLabels: Record<AdminUserRole, string> = {
   alumno: "Alumno",
 };
 
+const importReportLabels: Record<string, string> = {
+  creados: "Registros creados",
+  omitidos: "Usuarios omitidos",
+  errores: "Errores",
+};
+
+const createdUsersKeys = [
+  "usuarios_creados",
+  "usuariosCreados",
+  "createdUsers",
+  "created_users",
+  "users_created",
+  "detalle_creados",
+  "creados_detalle",
+];
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function formatImportReportKey(key: string): string {
+  return (
+    importReportLabels[key] ??
+    key
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (character) => character.toUpperCase())
+  );
+}
+
+function formatImportReportItem(value: unknown): string {
+  if (typeof value === "string" || typeof value === "number") {
+    return String(value);
+  }
+
+  if (isRecord(value)) {
+    return Object.entries(value)
+      .map(
+        ([key, item]) =>
+          `${formatImportReportKey(key)} ${formatImportReportItem(item)}`,
+      )
+      .join(" · ");
+  }
+
+  return "";
+}
+
 export function AdminDashboard() {
   const navigate = useNavigate();
   const [usersPage, setUsersPage] = useState<UsersPage | null>(null);
@@ -238,21 +284,58 @@ export function AdminDashboard() {
               El servidor no pudo completar la importación.
             </p>
           )}
-          {Object.keys(importStatus).some(
-            (key) => !["id", "estado", "mensaje"].includes(key),
-          ) && (
-            <pre className="admin-import-report">
-              {JSON.stringify(
-                Object.fromEntries(
-                  Object.entries(importStatus).filter(
-                    ([key]) => !["id", "estado", "mensaje"].includes(key),
-                  ),
+          {(() => {
+            const reportEntries = Object.entries(importStatus).filter(
+              ([key]) =>
+                !["id", "estado", "mensaje", ...createdUsersKeys].includes(
+                  key,
                 ),
-                null,
-                2,
-              )}
-            </pre>
-          )}
+            );
+
+            if (reportEntries.length === 0) return null;
+
+            return (
+              <div className="admin-import-summary">
+                <h3>Resumen de importación</h3>
+                <dl>
+                  {reportEntries
+                    .map(([key, value]) => (
+                      <div key={key}>
+                        <dt>{formatImportReportKey(key)}</dt>
+                        <dd>
+                          {Array.isArray(value) ? (
+                            value.length ? (
+                              <ul>
+                                {value.map((item, index) => (
+                                  <li key={`${key}-${index}`}>
+                                    {formatImportReportItem(item)}
+                                  </li>
+                                ))}
+                              </ul>
+                            ) : (
+                              "Ninguno"
+                            )
+                          ) : isRecord(value) ? (
+                            <ul>
+                              {Object.entries(value).map(
+                                ([detailKey, detailValue]) => (
+                                  <li key={detailKey}>
+                                    {formatImportReportKey(detailKey)}{" "}
+                                    {formatImportReportItem(detailValue)}
+                                  </li>
+                                ),
+                              )}
+                            </ul>
+                          ) : (
+                            String(value)
+                          )}
+                        </dd>
+                      </div>
+                    ))}
+                </dl>
+              </div>
+            );
+          })()}
         </section>
       )}
 
