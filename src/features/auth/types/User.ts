@@ -1,4 +1,4 @@
-export type AccountRole = "alumno" | "docente" | "administrador";
+export type UserRole = "alumno" | "docente" | "admin";
 
 export interface User {
   id: number;
@@ -6,7 +6,7 @@ export interface User {
   nombre: string;
   correo: string;
   nip_hash: string;
-  rol: AccountRole;
+  rol: UserRole;
   telefono: string;
   activo: boolean;
 }

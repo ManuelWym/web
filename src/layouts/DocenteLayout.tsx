@@ -1,5 +1,5 @@
 import { Outlet } from "react-router";
 
-export function CustomerLayout() {
+export function DocenteLayout() {
   return <Outlet />;
 }
