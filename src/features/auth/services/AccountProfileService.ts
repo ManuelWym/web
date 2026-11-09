@@ -26,6 +26,13 @@ export function loadAccountProfile(): AccountProfile | null {
       id: String(record.id),
       name: record.nombre,
       accountNumber: record.numero_cuenta,
+      email: typeof record.correo === "string" ? record.correo : "No disponible",
+      phone:
+        typeof record.telefono === "string"
+          ? record.telefono
+          : "No disponible",
+      role: typeof record.rol === "string" ? record.rol : "No disponible",
+      isActive: typeof record.activo === "boolean" ? record.activo : null,
     };
   } catch (error) {
     console.error("No se pudo leer el perfil guardado del usuario:", error);

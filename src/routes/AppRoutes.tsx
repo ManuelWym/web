@@ -4,6 +4,7 @@ import { DashboardEstudiante } from "@/features/customer/pages/DashboardEstudian
 import { CampusFeaturePage } from "@/features/customer/pages/CampusFeaturePage";
 import { ProviderDashboard } from "@/features/provider/pages/ProviderDashboard";
 import { MyAccount } from "@/features/auth/pages/MyAccount";
+import { Profile } from "@/features/auth/pages/Profile";
 import { AdminLayout } from "@/layouts/AdminLayout";
 import { AuthLayout } from "@/layouts/AuthLayout";
 import { CustomerLayout } from "@/layouts/CustomerLayout";
@@ -30,12 +31,12 @@ export const router = createBrowserRouter([
             element: <CampusHomeRoute />,
           },
           {
-            path: "me",
-            element: <MyAccount />,
+            element: <RoleProtectedRoute allowedRoles={["admin"]} />,
+            children: [{ path: "me", element: <MyAccount /> }],
           },
           {
             path: "perfil",
-            element: <MyAccount />,
+            element: <Profile />,
           },
           {
             path: "mensajes",

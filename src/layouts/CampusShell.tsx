@@ -177,15 +177,17 @@ export function CampusShell({ children, onLogout }: CampusShellProps) {
                 <span>Calificaciones</span>
                 <ChevronRight aria-hidden="true" />
               </Link>
-              <Link
-                to="/me"
-                className="campus-menu-link"
-                onClick={() => setMenuOpen(false)}
-              >
-                <UserRound aria-hidden="true" />
-                <span>Mi cuenta (/me)</span>
-                <ChevronRight aria-hidden="true" />
-              </Link>
+              {campusRole === "admin" && (
+                <Link
+                  to="/me"
+                  className="campus-menu-link"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <UserRound aria-hidden="true" />
+                  <span>Mi cuenta (/me)</span>
+                  <ChevronRight aria-hidden="true" />
+                </Link>
+              )}
               {campusRole === "admin" && (
                 <Link
                   to="/admin"
