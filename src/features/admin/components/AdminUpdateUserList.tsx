@@ -1,6 +1,6 @@
 import type { FormEvent } from "react";
 import { CircleAlert, Search } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { getAdminUserInitials } from "@/features/admin/utils/AdminUserUtils";
 import type {
   AdminUser,

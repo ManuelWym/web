@@ -13,7 +13,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { Link } from "react-router";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { loadAccountProfile } from "@/features/auth/services/AccountProfileService";
 import {
   getSavedCampusRole,

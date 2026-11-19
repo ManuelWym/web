@@ -7,7 +7,7 @@ import {
   Save,
 } from "lucide-react";
 import { Link } from "react-router";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { changeNip } from "@/features/auth/services/ChangeNipService";
 import "./ChangeNip.css";
 

@@ -1,6 +1,6 @@
 import type { FormEvent } from "react";
 import { CircleAlert, KeyRound, Save } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 interface AdminUpdateNipFormProps {
   userName?: string;

@@ -1,6 +1,6 @@
 import type { FormEvent } from "react";
 import { CircleAlert, Save, UserCog } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { adminUserRoles, isAdminUserRole } from "@/features/admin/utils/AdminUserUtils";
 import type {
   AdminUser,

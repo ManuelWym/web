@@ -1,7 +1,7 @@
 import { ArrowLeft, GraduationCap, KeyRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { fetchAccountProfile } from "@/features/auth/services/AccountProfileService";
 import { getSavedCampusRole } from "@/features/auth/services/CampusRoleService";
 import type { AccountProfile } from "@/features/auth/types/AccountProfile";

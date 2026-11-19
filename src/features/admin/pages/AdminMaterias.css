@@ -1,0 +1,169 @@
+@reference "../../../index.css";
+
+/* Encabezado de la sección */
+.admin-section-heading.materias-heading {
+  @apply mb-7 flex flex-wrap items-end justify-between gap-4;
+}
+
+.materias-card-title {
+  @apply flex items-center gap-2;
+}
+
+/* Barra de búsqueda y filtro */
+.materias-toolbar {
+  @apply flex items-end gap-4;
+}
+
+.materias-search {
+  @apply grid min-w-0 flex-1 gap-1.5 text-sm text-muted-foreground;
+}
+
+.materias-search-field {
+  @apply relative block w-full;
+}
+
+.materias-search-icon {
+  @apply pointer-events-none absolute top-1/2 -translate-y-1/2 text-muted-foreground;
+  left: 0.75rem;
+}
+
+.materias-search-field input {
+  @apply block min-h-10 w-full rounded-md border border-input bg-background text-foreground;
+  /* El texto empieza después del icono (0.75rem + 16px de icono + aire). */
+  padding: 0.5rem 0.75rem 0.5rem 2.5rem;
+  font: inherit;
+}
+
+.materias-filter {
+  @apply grid gap-1.5 text-sm text-muted-foreground;
+}
+
+.materias-filter select {
+  @apply min-h-10 rounded-md border border-input bg-background text-foreground;
+  padding: 0.5rem 0.75rem;
+  font: inherit;
+}
+
+/* Tabla */
+.materias-table-wrap {
+  @apply overflow-x-auto border-y border-border;
+}
+
+.materias-table {
+  @apply w-full border-collapse bg-card text-left text-xs;
+}
+
+.materias-table th {
+  @apply bg-primary text-[11px] font-semibold text-primary-foreground;
+}
+
+.materias-table th,
+.materias-table td {
+  @apply whitespace-nowrap border-b border-border;
+  padding: 0.875rem 0.75rem;
+}
+
+.materias-table .materia-name {
+  @apply min-w-40 whitespace-normal font-semibold;
+  overflow-wrap: anywhere;
+}
+
+.materias-table .materias-empty {
+  @apply text-center;
+}
+
+.materias-actions {
+  @apply flex gap-1;
+}
+
+.materias-notice {
+  @apply text-[13px];
+  padding: 0.75rem 0;
+}
+
+/* Formulario de registro / edición */
+.materias-dialog {
+  /* Centrado en la pantalla y del tamaño de su contenido. */
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(32rem, calc(100vw - 2rem));
+  height: fit-content;
+  max-height: calc(100dvh - 2rem);
+  padding: 2rem;
+  @apply overflow-y-auto rounded-lg border border-border bg-background text-foreground shadow-xl;
+}
+
+.materias-dialog::backdrop {
+  background: rgb(0 0 0 / 50%);
+}
+
+.materias-dialog-header {
+  @apply flex items-start justify-between gap-4;
+  margin-bottom: 1.5rem;
+}
+
+.materias-dialog-header h2 {
+  @apply text-lg font-semibold;
+  color: var(--uas-blue);
+}
+
+.materias-dialog-header p {
+  @apply text-sm text-muted-foreground;
+  margin-top: 0.25rem;
+}
+
+.materias-form {
+  @apply flex flex-col gap-4;
+}
+
+.materias-form label {
+  @apply grid gap-1.5 text-sm text-muted-foreground;
+}
+
+.materias-form input,
+.materias-form select {
+  @apply min-h-10 w-full min-w-0 rounded-md border border-border bg-background text-foreground;
+  padding: 0.5rem 0.75rem;
+  font: inherit;
+}
+
+.materias-form-error {
+  @apply flex items-center justify-center gap-1 text-center;
+}
+
+.materias-form-actions {
+  @apply flex flex-wrap justify-end gap-2.5;
+  margin-top: 0.5rem;
+}
+
+.materias-form-actions button {
+  padding-inline: 0.875rem;
+}
+
+@media (max-width: 700px) {
+  .admin-section-heading.materias-heading {
+    @apply flex-col items-start;
+  }
+
+  .materias-toolbar {
+    @apply flex-col items-stretch;
+  }
+
+  .materias-table th,
+  .materias-table td {
+    padding: 0.75rem 0.625rem;
+  }
+
+  .materias-dialog {
+    padding: 1.5rem;
+  }
+
+  .materias-form-actions {
+    @apply justify-stretch;
+  }
+
+  .materias-form-actions button {
+    @apply flex-1;
+  }
+}

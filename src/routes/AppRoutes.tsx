@@ -1,6 +1,10 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import { AdminDashboard } from "@/features/admin/pages/AdminDashboard";
+import { AdminCursos } from "@/features/admin/pages/AdminCursos";
+import { AdminGrupos } from "@/features/admin/pages/AdminGrupos";
+import { AdminMaterias } from "@/features/admin/pages/AdminMaterias";
 import { AdminUpdate } from "@/features/admin/pages/AdminUpdate";
+import { AdminUsuarios } from "@/features/admin/pages/AdminUsuarios";
 import { DashboardAlumno } from "@/features/alumno/pages/DashboardAlumno";
 import { CampusFeaturePage } from "@/features/shared/pages/CampusFeaturePage";
 import { DocenteDashboard } from "@/features/docente/pages/DocenteDashboard";
@@ -100,7 +104,19 @@ export const router = createBrowserRouter([
                 path: "admin",
                 element: <AdminLayout />,
                 children: [
-                  { index: true, element: <AdminDashboard /> },
+                  {
+                    element: <AdminDashboard />,
+                    children: [
+                      {
+                        index: true,
+                        element: <Navigate to="usuarios" replace />,
+                      },
+                      { path: "usuarios", element: <AdminUsuarios /> },
+                      { path: "materias", element: <AdminMaterias /> },
+                      { path: "grupos", element: <AdminGrupos /> },
+                      { path: "cursos", element: <AdminCursos /> },
+                    ],
+                  },
                   { path: "update", element: <AdminUpdate /> },
                 ],
               },

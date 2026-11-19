@@ -60,7 +60,11 @@
 }
 
 /* RESET & BASE */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* * El reset va en @layer base: fuera de una capa ganaría a todas las
+   utilidades de Tailwind (p-*, m-*, px-* de los botones, etc.). */
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+}
 html { font-size: 16px; }
 
 body {

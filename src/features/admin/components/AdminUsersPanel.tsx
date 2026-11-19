@@ -1,6 +1,6 @@
 import type { FormEvent } from "react";
 import { Search, UserCog } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { adminUserRoleLabels } from "@/features/admin/components/AdminUserColumns";
 import { AdminUsersTable } from "@/features/admin/components/AdminUsersTable";
 import type {

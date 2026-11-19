@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 import { router } from "@/routes/AppRoutes";
 
-import "./Index.css";
+import "./index.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {

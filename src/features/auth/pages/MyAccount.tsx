@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { AccountRoleSelector } from "@/features/auth/components/AccountRoleSelector";
 import {
   fetchAccountProfile,
