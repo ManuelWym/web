@@ -1,0 +1,157 @@
+@reference "../../../index.css";
+
+.admin-page:has(.grupos-page) {
+  width: min(100% - 2rem, 1240px);
+}
+
+.admin-grupos {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-grupos-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.admin-grupos-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-grupos-list,
+.admin-grupos-members {
+  width: 100%;
+  min-width: 0;
+}
+
+.admin-grupos .admin-table-scroll {
+  width: 100%;
+  border-block: 1px solid var(--border);
+}
+
+.admin-grupos .admin-table {
+  width: 100%;
+  min-width: 42rem;
+  background: var(--card);
+  font-size: 0.75rem;
+}
+
+.admin-grupos .admin-table th {
+  color: #fff;
+  background: var(--uas-blue);
+  font-size: 0.6875rem;
+}
+
+.admin-grupos .admin-table th,
+.admin-grupos .admin-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.admin-grupos-list tbody tr {
+  cursor: pointer;
+}
+
+.admin-grupos-list tbody tr:hover td {
+  background: var(--muted);
+}
+
+.admin-grupos-list tbody tr:focus-visible {
+  outline: 2px solid var(--uas-blue);
+  outline-offset: -2px;
+}
+
+.admin-grupos button.admin-grupos-button {
+  color: #fff;
+  background-color: var(--uas-blue);
+}
+
+.admin-grupos button.admin-grupos-button:hover {
+  background-color: color-mix(in srgb, var(--uas-blue) 85%, white);
+}
+
+.admin-grupos button[data-slot="button"]:not(.admin-grupos-button) {
+  color: var(--uas-blue);
+}
+
+.admin-grupos-members .admin-table {
+  min-width: 30rem;
+}
+
+.admin-grupos-members .admin-grupos-row {
+  width: 100%;
+  max-width: 560px;
+}
+
+.admin-grupos-members h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-grupos-members select,
+.admin-grupos-members input:not([type="file"]) {
+  min-height: 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding-inline: 0.75rem;
+  color: var(--foreground);
+  background: var(--background);
+  font: inherit;
+}
+
+.admin-grupos-members textarea {
+  width: 100%;
+  max-width: 560px;
+  min-height: 6rem;
+  resize: vertical;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.75rem;
+  color: var(--foreground);
+  background: var(--background);
+  font: 0.875rem/1.5 ui-monospace, monospace;
+}
+
+.admin-grupos-members .admin-file {
+  width: fit-content;
+}
+
+.admin-grupos-members .admin-import-summary {
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.8125rem;
+}
+
+.admin-grupos-members .admin-import-summary h3 {
+  margin: 0;
+}
+
+.admin-grupos .materias-dialog {
+  width: min(30rem, calc(100vw - 2rem));
+}
+
+.admin-grupos .admin-sample-note {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .admin-grupos-heading {
+    align-items: flex-start;
+  }
+
+  .admin-grupos-heading button {
+    width: 100%;
+  }
+
+  .admin-grupos .admin-card {
+    padding: 1rem;
+  }
+}
