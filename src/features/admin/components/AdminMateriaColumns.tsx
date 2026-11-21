@@ -1,7 +1,10 @@
 import { createColumnHelper, tableFeatures } from "@tanstack/react-table";
 import { Pencil, Power } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { AdminMateria } from "@/features/admin/types/AdminMateria";
+import type {
+  AdminMateria,
+  AdminSemestre,
+} from "@/features/admin/types/AdminMateria";
 
 export const adminMateriaTableFeatures = tableFeatures({});
 
@@ -14,10 +17,15 @@ export function createAdminMateriaColumns(
   onEdit: (materia: AdminMateria) => void,
   onToggle: (materia: AdminMateria) => void,
   updatingStatus: boolean,
+  semestres: AdminSemestre[],
 ) {
   return columnHelper.columns([
-    columnHelper.accessor("id", { header: "ID" }),
-    columnHelper.accessor("semestre_id", { header: "ID de semestre" }),
+    columnHelper.accessor("semestre_id", {
+      header: "Semestre",
+      cell: (info) =>
+        semestres.find((semestre) => semestre.id === info.getValue())?.nombre ??
+        info.getValue(),
+    }),
     columnHelper.accessor("clave", { header: "Clave" }),
     columnHelper.accessor("nombre", {
       header: "Nombre",

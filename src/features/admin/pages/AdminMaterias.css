@@ -54,7 +54,8 @@
 }
 
 .materias-table th {
-  @apply bg-primary text-[11px] font-semibold text-primary-foreground;
+  @apply text-[11px] font-semibold text-white;
+  background-color: var(--uas-blue);
 }
 
 .materias-table th,

@@ -35,11 +35,16 @@ export function AdminMaterias() {
     return materias.filter(
       (materia) =>
         (filter === "todas" || materia.activa === (filter === "activas")) &&
-        [materia.id, materia.semestre_id, materia.clave, materia.nombre].some(
-          (value) => String(value).toLowerCase().includes(text),
-        ),
+        [
+          materia.id,
+          materia.semestre_id,
+          semestres.find((semestre) => semestre.id === materia.semestre_id)
+            ?.nombre,
+          materia.clave,
+          materia.nombre,
+        ].some((value) => String(value ?? "").toLowerCase().includes(text)),
     );
-  }, [filter, materias, search]);
+  }, [filter, materias, search, semestres]);
 
   const openForm = useCallback(
     (materia: AdminMateria | null) => {
@@ -137,6 +142,7 @@ export function AdminMaterias() {
           !error && (
             <AdminMateriasTable
               materias={visible}
+              semestres={semestres}
               updatingStatus={updatingStatus}
               onEdit={openForm}
               onToggle={handleToggle}

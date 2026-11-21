@@ -4,10 +4,14 @@ import {
   adminMateriaTableFeatures,
   createAdminMateriaColumns,
 } from "@/features/admin/components/AdminMateriaColumns";
-import type { AdminMateria } from "@/features/admin/types/AdminMateria";
+import type {
+  AdminMateria,
+  AdminSemestre,
+} from "@/features/admin/types/AdminMateria";
 
 interface AdminMateriasTableProps {
   materias: AdminMateria[];
+  semestres: AdminSemestre[];
   updatingStatus: boolean;
   onEdit: (materia: AdminMateria) => void;
   onToggle: (materia: AdminMateria) => void;
@@ -15,13 +19,14 @@ interface AdminMateriasTableProps {
 
 export function AdminMateriasTable({
   materias,
+  semestres,
   updatingStatus,
   onEdit,
   onToggle,
 }: AdminMateriasTableProps) {
   const columns = useMemo(
-    () => createAdminMateriaColumns(onEdit, onToggle, updatingStatus),
-    [onEdit, onToggle, updatingStatus],
+    () => createAdminMateriaColumns(onEdit, onToggle, updatingStatus, semestres),
+    [onEdit, onToggle, semestres, updatingStatus],
   );
   const table = useTable({
     features: adminMateriaTableFeatures,
