@@ -164,9 +164,9 @@ export function AdminGrupos() {
     }
   };
 
-  const add = async () => {
+  const add = async (alumnoId: number) => {
     try {
-      const result = await roster.add();
+      const result = await roster.add(alumnoId);
       if (!result) return;
 
       const omitted = result.response.omitidos.find(
@@ -283,12 +283,10 @@ export function AdminGrupos() {
               updatingMember={roster.updatingMember}
               membersError={roster.membersError}
               pagination={roster.page?.meta ?? null}
-              alumnoSeleccionado={roster.alumnoSeleccionado}
               csv={roster.csv}
               csvError={roster.csvError}
               importId={roster.importId}
               consulta={roster.consulta}
-              onSelectAlumno={roster.setAlumnoSeleccionado}
               onAdd={add}
               onToggle={toggle}
               onCsvChange={(value) => {

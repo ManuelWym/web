@@ -23,7 +23,6 @@ export function useAdminGrupoRoster(
   const [membersByPage, setMembersByPage] = useState<
     Record<string, AdminGrupoMiembro[]>
   >({});
-  const [alumnoSeleccionado, setAlumnoSeleccionado] = useState("");
   const [csv, setCsv] = useState(initialCsv);
   const [csvError, setCsvError] = useState("");
   const [imports, setImports] = useState<AdminGrupoImportacion[]>([]);
@@ -107,10 +106,8 @@ export function useAdminGrupoRoster(
     }));
   };
 
-  const add = async () => {
-    const alumno = disponibles.find(
-      (item) => String(item.id) === alumnoSeleccionado,
-    );
+  const add = async (alumnoId: number) => {
+    const alumno = disponibles.find((item) => item.id === alumnoId);
     if (!alumno) return null;
 
     const response = await addMutation.mutateAsync(alumno.id);
@@ -126,7 +123,6 @@ export function useAdminGrupoRoster(
         },
       ]);
     }
-    setAlumnoSeleccionado("");
     return { alumno, response };
   };
 
@@ -229,8 +225,6 @@ export function useAdminGrupoRoster(
     updatingMember: statusMutation.isPending,
     currentPage: page,
     setPage,
-    alumnoSeleccionado,
-    setAlumnoSeleccionado,
     csv,
     setCsv,
     csvError,

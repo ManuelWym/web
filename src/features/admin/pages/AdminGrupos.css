@@ -77,6 +77,14 @@
   background-color: color-mix(in srgb, var(--uas-blue) 85%, white);
 }
 
+.admin-grupos .admin-grupos-heading button.admin-grupos-button {
+  background-color: #000;
+}
+
+.admin-grupos .admin-grupos-heading button.admin-grupos-button:hover {
+  background-color: #262626;
+}
+
 .admin-grupos button[data-slot="button"]:not(.admin-grupos-button) {
   color: var(--uas-blue);
 }
@@ -85,9 +93,17 @@
   min-width: 30rem;
 }
 
+.admin-grupos-members .admin-table button.admin-grupos-button {
+  color: #fff;
+}
+
 .admin-grupos-members .admin-grupos-row {
   width: 100%;
   max-width: 560px;
+}
+
+.admin-grupos .admin-grupos-members form.admin-grupos-row button[data-slot="button"] {
+  color: #fff;
 }
 
 .admin-grupos-members h2 {

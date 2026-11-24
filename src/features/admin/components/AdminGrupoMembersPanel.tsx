@@ -1,3 +1,4 @@
+import { useState, type FormEvent } from "react";
 import {
   CircleAlert,
   Search,
@@ -26,13 +27,11 @@ interface AdminGrupoMembersPanelProps {
   updatingMember: boolean;
   membersError: string;
   pagination: AdminGrupoAlumnosPage["meta"] | null;
-  alumnoSeleccionado: string;
   csv: string;
   csvError: string;
   importId: string;
   consulta: AdminGrupoImportacion | null | undefined;
-  onSelectAlumno: (id: string) => void;
-  onAdd: () => void;
+  onAdd: (id: number) => void;
   onToggle: (id: number) => void;
   onCsvChange: (value: string) => void;
   onReadCsv: (file: File | undefined) => void;
@@ -52,12 +51,10 @@ export function AdminGrupoMembersPanel({
   updatingMember,
   membersError,
   pagination,
-  alumnoSeleccionado,
   csv,
   csvError,
   importId,
   consulta,
-  onSelectAlumno,
   onAdd,
   onToggle,
   onCsvChange,
@@ -67,6 +64,29 @@ export function AdminGrupoMembersPanel({
   onLookup,
   onPageChange,
 }: AdminGrupoMembersPanelProps) {
+  const [searchText, setSearchText] = useState("");
+  const [search, setSearch] = useState("");
+  const [searchPage, setSearchPage] = useState(1);
+  const searchResults = search
+    ? disponibles.filter((alumno) =>
+        `${alumno.nombre} ${alumno.numero_cuenta}`
+          .toLowerCase()
+          .includes(search.toLowerCase()),
+      )
+    : [];
+  const searchPageSize = 10;
+  const searchPageCount = Math.ceil(searchResults.length / searchPageSize);
+  const currentSearchPage = Math.min(searchPage, Math.max(searchPageCount, 1));
+  const paginatedSearchResults = searchResults.slice(
+    (currentSearchPage - 1) * searchPageSize,
+    currentSearchPage * searchPageSize,
+  );
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setSearch(searchText.trim());
+    setSearchPage(1);
+  };
+
   return (
     <section
       className="admin-card min-w-0"
@@ -164,30 +184,100 @@ export function AdminGrupoMembersPanel({
       <h2 className="flex items-center gap-2">
         <UserPlus size={18} aria-hidden="true" /> Agregar alumno
       </h2>
-      <div className="admin-grupos-row flex flex-wrap gap-2">
-        <select
-          className="min-h-10 min-w-0 flex-1 rounded-md border border-border bg-background px-3"
-          aria-label="Alumno a agregar"
-          value={alumnoSeleccionado}
-          onChange={(event) => onSelectAlumno(event.target.value)}
-          disabled={loadingAlumnos || disponibles.length === 0}
-        >
-          <option value="">Selecciona un alumno</option>
-          {disponibles.map((alumno) => (
-            <option key={alumno.id} value={alumno.id}>
-              {alumno.numero_cuenta} · {alumno.nombre}
-            </option>
-          ))}
-        </select>
-        <Button
-          type="button"
-          className="admin-grupos-button"
-          onClick={onAdd}
-          disabled={!alumnoSeleccionado || adding}
-        >
-          {adding ? "Agregando..." : "Agregar"}
+      <form
+        className="admin-grupos-row flex flex-wrap items-end gap-2"
+        onSubmit={handleSearch}
+      >
+        <label className="admin-search grid min-w-0 flex-1 gap-1.5 text-sm text-muted-foreground">
+          Buscar por nombre o número de cuenta
+          <input
+            type="search"
+            value={searchText}
+            onChange={(event) => setSearchText(event.target.value)}
+            placeholder="Nombre o número de cuenta"
+            disabled={loadingAlumnos || disponibles.length === 0}
+          />
+        </label>
+        <Button type="submit" disabled={loadingAlumnos || !searchText.trim()}>
+          <Search aria-hidden="true" />
+          Buscar
         </Button>
-      </div>
+      </form>
+      {loadingAlumnos ? (
+        <p className="admin-empty-state" role="status">
+          Cargando alumnos disponibles...
+        </p>
+      ) : disponibles.length === 0 ? (
+        <p className="admin-empty-state">No hay alumnos disponibles para agregar.</p>
+      ) : search ? (
+        searchResults.length ? (
+          <>
+            <div className="admin-table-scroll">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>N.º cuenta</th>
+                    <th>Nombre</th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginatedSearchResults.map((alumno) => (
+                    <tr key={alumno.id}>
+                      <td>{alumno.numero_cuenta}</td>
+                      <td>{alumno.nombre}</td>
+                      <td>
+                        <Button
+                          type="button"
+                          className="admin-grupos-button"
+                          onClick={() => onAdd(alumno.id)}
+                          disabled={adding}
+                        >
+                          {adding ? "Agregando..." : "Agregar"}
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {searchPageCount > 1 && (
+              <div className="admin-pagination">
+                <span>
+                  {searchResults.length} alumnos · Página {currentSearchPage} de{" "}
+                  {searchPageCount}
+                </span>
+                <div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={currentSearchPage <= 1}
+                    onClick={() => setSearchPage(currentSearchPage - 1)}
+                  >
+                    Anterior
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={currentSearchPage >= searchPageCount}
+                    onClick={() => setSearchPage(currentSearchPage + 1)}
+                  >
+                    Siguiente
+                  </Button>
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          <p className="admin-empty-state">
+            No se encontraron alumnos con ese nombre o número de cuenta.
+          </p>
+        )
+      ) : (
+        <p className="admin-empty-state">
+          Busca por nombre o número de cuenta para mostrar alumnos disponibles.
+        </p>
+      )}
 
       <h2 className="flex items-center gap-2">
         <Upload size={18} aria-hidden="true" /> Importar alumnos desde CSV
