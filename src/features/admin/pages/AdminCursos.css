@@ -1,0 +1,271 @@
+@reference "../../../index.css";
+
+.cursos-heading {
+  @apply mb-7 flex flex-wrap items-end justify-between gap-4;
+}
+
+.cursos-notice {
+  @apply mb-4;
+}
+
+.cursos-filters {
+  @apply mb-6 grid items-end gap-3;
+  grid-template-columns: minmax(220px, 2fr) repeat(3, minmax(140px, 1fr)) auto;
+}
+
+.cursos-filters label,
+.cursos-form label {
+  @apply grid min-w-0 gap-1.5 text-sm text-muted-foreground;
+}
+
+.cursos-filters input,
+.cursos-filters select,
+.cursos-form input,
+.cursos-form select {
+  @apply min-h-10 w-full min-w-0 rounded-md border border-border bg-background text-foreground;
+  padding: 0.5rem 0.75rem;
+  font: inherit;
+}
+
+.cursos-search {
+  @apply relative flex items-center;
+}
+
+.cursos-search svg {
+  @apply pointer-events-none absolute text-muted-foreground;
+  left: 0.75rem;
+}
+
+.cursos-search input {
+  padding-left: 2.5rem;
+}
+
+.cursos-materia-search {
+  position: relative;
+}
+
+.cursos-materia-options {
+  @apply absolute z-10 max-h-56 w-full overflow-y-auto rounded-md border border-border bg-popover shadow-lg;
+  top: 100%;
+  left: 0;
+  margin-top: 0.25rem;
+}
+
+.cursos-materia-options button {
+  @apply flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm text-popover-foreground;
+}
+
+.cursos-materia-options button:hover,
+.cursos-materia-options button[aria-selected="true"] {
+  @apply bg-accent;
+}
+
+.cursos-materia-options button small,
+.cursos-materia-no-results {
+  @apply text-xs text-muted-foreground;
+}
+
+.cursos-materia-no-results {
+  @apply px-3 py-2;
+}
+
+.cursos-summary {
+  @apply mb-3 flex items-center gap-2 text-sm font-semibold;
+}
+
+.cursos-table-wrap {
+  @apply overflow-x-auto border-y border-border;
+}
+
+.cursos-table {
+  @apply w-full border-collapse bg-card text-left text-xs;
+}
+
+.cursos-table th {
+  @apply text-[11px] font-semibold text-white;
+  background-color: var(--uas-blue);
+}
+
+.cursos-table th,
+.cursos-table td {
+  @apply whitespace-nowrap border-b border-border;
+  padding: 0.875rem 0.75rem;
+}
+
+.cursos-table tbody tr:hover {
+  @apply bg-muted;
+}
+
+.cursos-row-clickable {
+  @apply cursor-pointer;
+}
+
+.cursos-row-clickable[aria-current="true"] {
+  @apply bg-secondary;
+}
+
+.cursos-row-clickable:focus-visible {
+  outline: 2px solid var(--uas-blue);
+  outline-offset: -2px;
+}
+
+.cursos-name {
+  @apply min-w-40 font-semibold;
+}
+
+.cursos-teacher {
+  @apply min-w-40;
+}
+
+.cursos-teacher-cell {
+  @apply flex items-center gap-2;
+}
+
+.cursos-edit-teacher {
+  @apply inline-flex size-7 flex-none items-center justify-center rounded-md border border-border bg-card text-muted-foreground;
+  cursor: pointer;
+}
+
+.cursos-edit-teacher:hover {
+  border-color: var(--uas-blue);
+  color: var(--uas-blue);
+}
+
+.cursos-group strong,
+.cursos-group small {
+  @apply block;
+}
+
+.cursos-group small {
+  @apply mt-1 text-[10px] text-muted-foreground;
+}
+
+.cursos-students {
+  @apply min-w-32;
+}
+
+.cursos-no-teacher {
+  @apply whitespace-nowrap rounded px-2 py-1 text-[11px];
+  background: color-mix(in srgb, var(--uas-gold) 14%, white);
+  color: var(--uas-mostaza);
+}
+
+.cursos-empty {
+  @apply p-10 text-center;
+}
+
+.cursos-pagination {
+  @apply mt-4 flex items-center justify-between gap-3 text-xs text-muted-foreground;
+}
+
+.cursos-pagination-controls {
+  @apply flex items-center gap-3;
+}
+
+.cursos-detail {
+  @apply mt-8 flex flex-col gap-3;
+}
+
+.cursos-access {
+  @apply mt-4 text-xs text-muted-foreground;
+}
+
+.cursos-dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(34rem, calc(100vw - 2rem));
+  height: fit-content;
+  max-height: calc(100dvh - 2rem);
+  padding: 2rem;
+  @apply overflow-y-auto rounded-lg border border-border bg-background text-foreground shadow-xl;
+}
+
+.cursos-docente-dialog {
+  width: min(28rem, calc(100vw - 2rem));
+}
+
+.cursos-dialog::backdrop {
+  background: rgb(0 0 0 / 50%);
+}
+
+.cursos-dialog-header {
+  @apply mb-6 flex items-start justify-between gap-4;
+}
+
+.cursos-dialog-header h2 {
+  @apply text-lg font-semibold;
+  color: var(--uas-blue);
+}
+
+.cursos-dialog-header p {
+  @apply mt-1 text-sm text-muted-foreground;
+}
+
+.cursos-form {
+  @apply flex flex-col gap-4;
+}
+
+.cursos-form input[readonly] {
+  @apply bg-muted;
+}
+
+.cursos-form-columns {
+  @apply grid grid-cols-3 gap-3;
+}
+
+.cursos-form-error {
+  @apply flex items-center gap-2;
+}
+
+.cursos-form-actions {
+  @apply mt-1 flex flex-wrap justify-end gap-2.5;
+}
+
+.cursos-form-actions button {
+  padding-inline: 0.875rem;
+}
+
+@media (max-width: 1100px) {
+  .cursos-filters {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .cursos-filter-search {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .cursos-heading {
+    @apply flex-col items-start;
+  }
+
+  .cursos-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .cursos-pagination {
+    @apply items-start flex-col;
+  }
+
+  .cursos-pagination-controls {
+    @apply w-full justify-between;
+  }
+
+  .cursos-form-columns {
+    @apply grid-cols-1;
+  }
+
+  .cursos-dialog {
+    padding: 1.5rem;
+  }
+
+  .cursos-form-actions {
+    @apply justify-stretch;
+  }
+
+  .cursos-form-actions button {
+    @apply flex-1;
+  }
+}
