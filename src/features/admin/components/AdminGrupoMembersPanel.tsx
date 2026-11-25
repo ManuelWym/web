@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from "react";
 import {
-  CircleAlert,
   Search,
   Upload,
   UserCheck,
@@ -9,10 +8,11 @@ import {
   Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AdminImportStatus } from "@/features/admin/components/AdminImportStatus";
 import type {
   AdminGrupo,
   AdminGrupoAlumnosPage,
-  AdminGrupoImportacion,
+  AdminGrupoImportacionStatusResponse,
   AdminGrupoMiembro,
 } from "@/features/admin/types/AdminGrupo";
 import type { AdminUser } from "@/features/admin/types/AdminUser";
@@ -29,15 +29,15 @@ interface AdminGrupoMembersPanelProps {
   pagination: AdminGrupoAlumnosPage["meta"] | null;
   csv: string;
   csvError: string;
-  importId: string;
-  consulta: AdminGrupoImportacion | null | undefined;
+  importing: boolean;
+  importStatus: AdminGrupoImportacionStatusResponse | null;
+  importError: string;
   onAdd: (id: number) => void;
   onToggle: (id: number) => void;
   onCsvChange: (value: string) => void;
   onReadCsv: (file: File | undefined) => void;
   onImport: () => void;
-  onImportIdChange: (value: string) => void;
-  onLookup: () => void;
+  onRetryImportStatus: () => void;
   onPageChange: (page: number) => void;
 }
 
@@ -53,15 +53,15 @@ export function AdminGrupoMembersPanel({
   pagination,
   csv,
   csvError,
-  importId,
-  consulta,
+  importing,
+  importStatus,
+  importError,
   onAdd,
   onToggle,
   onCsvChange,
   onReadCsv,
   onImport,
-  onImportIdChange,
-  onLookup,
+  onRetryImportStatus,
   onPageChange,
 }: AdminGrupoMembersPanelProps) {
   const [searchText, setSearchText] = useState("");
@@ -305,44 +305,26 @@ export function AdminGrupoMembersPanel({
         type="button"
         className="admin-grupos-button"
         onClick={onImport}
+        disabled={importing || importStatus?.estado === "en_proceso"}
       >
-        <Upload aria-hidden="true" /> Importar alumnos
+        <Upload aria-hidden="true" />
+        {importing
+          ? "Enviando CSV..."
+          : importStatus?.estado === "en_proceso"
+            ? "Importación en proceso..."
+            : "Importar alumnos"}
       </Button>
-
-      <h2 className="flex items-center gap-2">
-        <Search size={18} aria-hidden="true" /> Consultar importación
-      </h2>
-      <div className="admin-grupos-row flex flex-wrap gap-2">
-        <input
-          className="min-h-10 min-w-0 flex-1 rounded-md border border-border bg-background px-3"
-          aria-label="ID de importación"
-          placeholder="ID de importación"
-          value={importId}
-          onChange={(event) => onImportIdChange(event.target.value)}
-        />
-        <Button type="button" variant="outline" onClick={onLookup}>
-          Consultar
-        </Button>
-      </div>
-      {consulta === null && (
-        <p className="admin-form-error flex items-center gap-1" role="alert">
-          <CircleAlert size={14} aria-hidden="true" />
-          No se encontró esa importación en este grupo.
-        </p>
-      )}
-      {consulta && (
-        <div className="admin-import-summary">
-          <h3>Importación #{consulta.id} · Terminada</h3>
-          <span>Agregados: {consulta.agregados.length}</span>
-          <span>Omitidos: {consulta.omitidos.length}</span>
-          <span>Con error: {consulta.errores.length}</span>
-          {[...consulta.omitidos, ...consulta.errores].map((message) => (
-            <span key={message} className="admin-form-error">
-              {message}
-            </span>
-          ))}
+      {importStatus?.estado === "en_proceso" && (
+        <div className="admin-import-summary" role="status" aria-live="polite">
+          <h3>Importación {importStatus.id} · En proceso</h3>
+          <span>El servidor recibió el archivo y está procesándolo.</span>
         </div>
       )}
+      <AdminImportStatus
+        status={importStatus}
+        error={importError}
+        onRetry={onRetryImportStatus}
+      />
     </section>
   );
 }

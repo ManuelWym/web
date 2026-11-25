@@ -56,7 +56,7 @@ export function AdminGrupos() {
   const changeSelection = (id: number) => {
     setSelectedId(id);
     roster.setPage(1);
-    roster.setConsulta(undefined);
+    roster.clearImportStatus();
     const panel = panelRef.current;
     if (!panel) return;
     const bounds = panel.getBoundingClientRect();
@@ -148,7 +148,7 @@ export function AdminGrupos() {
       });
       setSelectedId(response.grupo.id);
       roster.setPage(1);
-      roster.setConsulta(undefined);
+      roster.clearImportStatus();
       setNotice(response.message);
       toast.success(response.message);
       setOpen(false);
@@ -207,14 +207,27 @@ export function AdminGrupos() {
     }
   };
 
-  const importar = () => {
-    const imp = roster.importar();
-    if (imp) setNotice(`Importación #${imp.id} terminada.`);
+  const importar = async () => {
+    try {
+      const result = await roster.importar();
+      if (result) {
+        const message = `Importación ${result.id} iniciada y en proceso.`;
+        setNotice(message);
+        toast.success(message);
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "No se pudo iniciar la importación de alumnos.";
+      toast.error(message);
+    }
   };
 
   const readCsv = async (file: File | undefined) => {
     const loaded = await roster.readCsv(file);
     if (loaded && file) {
+      roster.clearImportStatus();
       setNotice(`Archivo ${file.name} cargado.`);
     }
   };
@@ -224,7 +237,7 @@ export function AdminGrupos() {
       <header className="admin-section-heading admin-grupos-heading">
         <div>
           <h2>Grupos</h2>
-          <p>Registra grupos y administra sus alumnos.</p>
+          <p>Registra grupos y administra sus alumnos: selecciona un grupo de la tabla para ver sus Alumnos.</p>
         </div>
         <Button
           type="button"
@@ -285,18 +298,19 @@ export function AdminGrupos() {
               pagination={roster.page?.meta ?? null}
               csv={roster.csv}
               csvError={roster.csvError}
-              importId={roster.importId}
-              consulta={roster.consulta}
+              importing={roster.importing}
+              importStatus={roster.importStatus}
+              importError={roster.importError}
               onAdd={add}
               onToggle={toggle}
               onCsvChange={(value) => {
                 roster.setCsv(value);
                 roster.clearCsvError();
+                roster.clearImportStatus();
               }}
               onReadCsv={(file) => void readCsv(file)}
               onImport={importar}
-              onImportIdChange={roster.setImportId}
-              onLookup={roster.lookupImport}
+              onRetryImportStatus={() => void roster.retryImportStatus()}
               onPageChange={roster.setPage}
             />
           </section>

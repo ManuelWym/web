@@ -106,7 +106,7 @@ export function AdminCursos() {
       <header className="admin-section-heading cursos-heading">
         <div>
           <h2>Cursos</h2>
-          <p>Consulta cursos y asigna docentes a sus grupos.</p>
+          <p>Consulta cursos y asigna docentes a sus grupos: selecciona un curso de la tabla para ver a los alumnos del curso.</p>
         </div>
         <Button type="button" onClick={() => setOpen(true)} disabled={!canRegister}>
           <Plus aria-hidden="true" />

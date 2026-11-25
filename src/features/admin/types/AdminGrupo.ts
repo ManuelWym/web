@@ -95,10 +95,14 @@ export interface AdminGrupoMiembro {
   baja_en: string | null;
 }
 
-export interface AdminGrupoImportacion {
-  id: number;
-  grupo_id: number;
-  agregados: string[];
-  omitidos: string[];
-  errores: string[];
+export interface AdminGrupoImportacionStatusResponse {
+  id: string;
+  estado: string;
+  mensaje?: string;
+  [key: string]: unknown;
+}
+
+export interface AdminGrupoImportacionUploadResponse
+  extends AdminGrupoImportacionStatusResponse {
+  estado: "en_proceso";
 }

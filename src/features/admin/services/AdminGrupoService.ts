@@ -9,6 +9,8 @@ import type {
   AdminGrupoAlumnosResponse,
   AdminGrupoAlumnoEstado,
   AdminGrupoAlumnoEstadoResponse,
+  AdminGrupoImportacionUploadResponse,
+  AdminGrupoImportacionStatusResponse,
   AdminGrupoPayload,
   AdminGrupoResponse,
   AdminGrupoSemestre,
@@ -183,6 +185,44 @@ function parseGrupoAlumnosResponse(value: unknown): AdminGrupoAlumnosResponse {
       parsePositiveInteger(id, "ID de alumno agregado"),
     ),
     omitidos,
+  };
+}
+
+function parseGrupoImportacionUploadResponse(
+  value: unknown,
+): AdminGrupoImportacionUploadResponse {
+  if (
+    !isRecord(value) ||
+    typeof value.id !== "string" ||
+    value.estado !== "en_proceso"
+  ) {
+    throw new Error(
+      "La API devolvió una respuesta de importación con formato no válido.",
+    );
+  }
+
+  return { id: value.id, estado: value.estado };
+}
+
+function parseGrupoImportacionStatusResponse(
+  value: unknown,
+): AdminGrupoImportacionStatusResponse {
+  if (
+    !isRecord(value) ||
+    typeof value.id !== "string" ||
+    typeof value.estado !== "string" ||
+    (value.mensaje !== undefined && typeof value.mensaje !== "string")
+  ) {
+    throw new Error(
+      "La API devolvió el estado de importación con formato no válido.",
+    );
+  }
+
+  return {
+    ...value,
+    id: value.id,
+    estado: value.estado,
+    ...(typeof value.mensaje === "string" ? { mensaje: value.mensaje } : {}),
   };
 }
 
@@ -394,6 +434,56 @@ export async function addAlumnosGrupo(
   } catch (error) {
     throw new Error(
       getApiErrorMessage(error, "No se pudieron agregar los alumnos al grupo"),
+    );
+  }
+}
+
+export async function uploadAlumnosGrupoCsv(
+  grupoId: number,
+  file: File,
+): Promise<AdminGrupoImportacionUploadResponse> {
+  try {
+    parsePositiveInteger(grupoId, "ID de grupo");
+
+    const formData = new FormData();
+    formData.append("archivo", file);
+
+    const response = await apiClient.post<unknown>(
+      `/grupos/${encodeURIComponent(grupoId)}/alumnos/importaciones`,
+      formData,
+      {
+        headers: {
+          ...getAuthorizationHeaders(),
+          "Content-Type": "multipart/form-data",
+        },
+      },
+    );
+    return parseGrupoImportacionUploadResponse(response.data);
+  } catch (error) {
+    throw new Error(
+      getApiErrorMessage(error, "No se pudo iniciar la importación de alumnos"),
+    );
+  }
+}
+
+export async function getAlumnosGrupoImportacionStatus(
+  grupoId: number,
+  id: string,
+): Promise<AdminGrupoImportacionStatusResponse> {
+  try {
+    parsePositiveInteger(grupoId, "ID de grupo");
+    if (!id.trim()) {
+      throw new Error("El ID de importación no es válido.");
+    }
+
+    const response = await apiClient.get<unknown>(
+      `/grupos/${encodeURIComponent(grupoId)}/alumnos/importaciones/${encodeURIComponent(id)}`,
+      { headers: getAuthorizationHeaders() },
+    );
+    return parseGrupoImportacionStatusResponse(response.data);
+  } catch (error) {
+    throw new Error(
+      getApiErrorMessage(error, "No se pudo consultar la importación de alumnos"),
     );
   }
 }

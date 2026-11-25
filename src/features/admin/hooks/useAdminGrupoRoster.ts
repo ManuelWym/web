@@ -1,18 +1,21 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import {
   addAlumnosGrupo,
+  getAlumnosGrupoImportacionStatus,
+  uploadAlumnosGrupoCsv,
   updateAlumnoGrupoEstado,
 } from "@/features/admin/services/AdminGrupoService";
 import { useAdminGrupoMembers } from "@/features/admin/hooks/useAdminGrupoMembers";
 import type {
   AdminGrupoAlumnoEstado,
-  AdminGrupoImportacion,
+  AdminGrupoImportacionStatusResponse,
+  AdminGrupoImportacionUploadResponse,
   AdminGrupoMiembro,
 } from "@/features/admin/types/AdminGrupo";
 import type { AdminUser } from "@/features/admin/types/AdminUser";
 
-const initialCsv = "numero_cuenta\n20261003\n20261004\n123";
+const initialCsv = "numero_cuenta,nombre,nip,correo,grupo";
 
 export function useAdminGrupoRoster(
   grupoId: number | null,
@@ -25,11 +28,11 @@ export function useAdminGrupoRoster(
   >({});
   const [csv, setCsv] = useState(initialCsv);
   const [csvError, setCsvError] = useState("");
-  const [imports, setImports] = useState<AdminGrupoImportacion[]>([]);
-  const [importId, setImportId] = useState("");
-  const [consulta, setConsulta] = useState<
-    AdminGrupoImportacion | null | undefined
-  >();
+  const [importRecord, setImportRecord] = useState<{
+    grupoId: number;
+    status: AdminGrupoImportacionUploadResponse;
+  } | null>(null);
+  const [pollingStarted, setPollingStarted] = useState(false);
   const {
     page: apiPage,
     loading: loadingMembers,
@@ -77,6 +80,75 @@ export function useAdminGrupoRoster(
       }
     },
   });
+  const importMutation = useMutation({
+    mutationFn: ({
+      grupoId,
+      file,
+    }: {
+      grupoId: number;
+      file: File;
+    }) => uploadAlumnosGrupoCsv(grupoId, file),
+  });
+  const importStatusQuery = useQuery<AdminGrupoImportacionStatusResponse>({
+    queryKey: [
+      "admin",
+      "grupos",
+      importRecord?.grupoId,
+      "alumnos-importaciones",
+      importRecord?.status.id,
+    ],
+    queryFn: () => {
+      if (!importRecord) {
+        throw new Error("No hay una importación para consultar.");
+      }
+      return getAlumnosGrupoImportacionStatus(
+        importRecord.grupoId,
+        importRecord.status.id,
+      );
+    },
+    enabled: Boolean(
+      pollingStarted &&
+        importRecord?.grupoId === grupoId &&
+        importRecord.status.estado === "en_proceso",
+    ),
+    staleTime: 0,
+    refetchInterval: (query) => {
+      if (query.state.status === "error") return false;
+      return query.state.data?.estado === "en_proceso" ? 2000 : false;
+    },
+  });
+
+  const importRecordId = importRecord?.status.id;
+  const importRecordState = importRecord?.status.estado;
+
+  useEffect(() => {
+    if (!importRecordId || importRecordState !== "en_proceso") return;
+    const timeoutId = window.setTimeout(() => setPollingStarted(true), 2000);
+    return () => window.clearTimeout(timeoutId);
+  }, [importRecordId, importRecordState]);
+
+  useEffect(() => {
+    if (
+      importRecord &&
+      importStatusQuery.data?.estado === "terminada"
+    ) {
+      void Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: ["admin", "grupos", importRecord.grupoId, "alumnos"],
+        }),
+        queryClient.invalidateQueries({ queryKey: ["admin", "grupos"] }),
+      ]);
+    }
+  }, [importRecord, importStatusQuery.data?.estado, queryClient]);
+
+  const importStatus =
+    importRecord?.grupoId === grupoId
+      ? importStatusQuery.data ?? importRecord.status
+      : null;
+  const importError =
+    importRecord?.grupoId === grupoId && importStatusQuery.error instanceof Error
+      ? importStatusQuery.error.message
+      : "";
 
   const apiMembers = (apiPage?.data ?? []).map((alumno) => ({
     alumno_id: alumno.alumno_id,
@@ -147,50 +219,22 @@ export function useAdminGrupoRoster(
     return { message: response.message };
   };
 
-  const importar = () => {
-    if (grupoId === null) return null;
-    const imp: AdminGrupoImportacion = {
-      id: imports.length + 1,
-      grupo_id: grupoId,
-      agregados: [],
-      omitidos: [],
-      errores: [],
-    };
-    const nuevos: AdminGrupoMiembro[] = [];
+  const importar = async () => {
+    if (grupoId === null) {
+      throw new Error("Selecciona un grupo para importar alumnos.");
+    }
+    if (!csv.trim()) {
+      setCsvError("Agrega el contenido del CSV antes de importar.");
+      return null;
+    }
 
-    csv
-      .trim()
-      .split(/\r?\n/)
-      .forEach((raw, index) => {
-        const cuenta = raw.split(",")[0]?.trim() ?? "";
-        if (!cuenta || (index === 0 && /numero_cuenta/i.test(cuenta))) return;
-        const alumno = alumnos.find((item) => item.numero_cuenta === cuenta);
-        if (!/^\d{8}$/.test(cuenta)) {
-          imp.errores.push(`${cuenta}: número de cuenta inválido`);
-        } else if (!alumno) {
-          imp.errores.push(`${cuenta}: alumno no encontrado`);
-        } else if (
-          miembros.some((item) => item.alumno_id === alumno.id) ||
-          nuevos.some((item) => item.alumno_id === alumno.id)
-        ) {
-          imp.omitidos.push(`${cuenta}: ya está en el grupo`);
-        } else {
-          nuevos.push({
-            alumno_id: alumno.id,
-            numero_cuenta: alumno.numero_cuenta,
-            nombre: alumno.nombre,
-            activo: true,
-            baja_en: null,
-          });
-          imp.agregados.push(cuenta);
-        }
-      });
-
-    setLista((current) => [...current, ...nuevos]);
-    setImports((current) => [...current, imp]);
-    setConsulta(imp);
-    setImportId(String(imp.id));
-    return imp;
+    setCsvError("");
+    setImportRecord(null);
+    setPollingStarted(false);
+    const file = new File([csv], "alumnos.csv", { type: "text/csv" });
+    const result = await importMutation.mutateAsync({ grupoId, file });
+    setImportRecord({ grupoId, status: result });
+    return result;
   };
 
   const readCsv = async (file: File | undefined) => {
@@ -203,16 +247,6 @@ export function useAdminGrupoRoster(
       setCsvError("No se pudo leer el archivo CSV.");
       return false;
     }
-  };
-
-  const lookupImport = () => {
-    if (grupoId === null) return;
-    setConsulta(
-      imports.find(
-        (item) =>
-          String(item.id) === importId.trim() && item.grupo_id === grupoId,
-      ) ?? null,
-    );
   };
 
   return {
@@ -228,15 +262,20 @@ export function useAdminGrupoRoster(
     csv,
     setCsv,
     csvError,
+    importing: importMutation.isPending,
     clearCsvError: () => setCsvError(""),
-    importId,
-    setImportId,
-    consulta,
-    setConsulta,
+    clearImportStatus: () => {
+      setImportRecord(null);
+      setPollingStarted(false);
+    },
+    importStatus,
+    importError,
+    retryImportStatus: async () => {
+      await importStatusQuery.refetch();
+    },
     add,
     toggle,
     importar,
     readCsv,
-    lookupImport,
   };
 }
