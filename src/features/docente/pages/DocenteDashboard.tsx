@@ -1,3 +1,5 @@
+import { MisCursos } from "@/features/cursos/pages/MisCursos";
+
 export function DocenteDashboard() {
-  return <h2>Panel de Docente</h2>;
+  return <MisCursos role="docente" />;
 }

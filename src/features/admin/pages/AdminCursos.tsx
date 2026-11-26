@@ -1,5 +1,4 @@
-import { useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { BookOpen, ChevronLeft, ChevronRight, Plus, RotateCcw, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AdminCursoFormDialog } from "@/features/admin/components/AdminCursoFormDialog";
@@ -12,9 +11,7 @@ import type { AdminCurso } from "@/features/admin/types/AdminCurso";
 import "./AdminCursos.css";
 
 function roman(value: number): string {
-  const map = [
-    [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"],
-  ] as const;
+  const map = [[10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]] as const;
   let result = "";
   let remaining = value;
   for (const [amount, numeral] of map) {
@@ -34,10 +31,8 @@ export function AdminCursos() {
   const [page, setPage] = useState(1);
   const [open, setOpen] = useState(false);
   const [docenteOpen, setDocenteOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [alumnosPage, setAlumnosPage] = useState(1);
+  const [editingCurso, setEditingCurso] = useState<AdminCurso | null>(null);
   const [notice, setNotice] = useState("");
-  const detailRef = useRef<HTMLElement>(null);
   const { materias, semestres, loading: loadingMaterias, error: materiasError } = useAdminMaterias();
   const { grupos, loading: loadingGrupos, error: gruposError } = useAdminGrupos();
   const cursos = useAdminCursos({
@@ -47,31 +42,6 @@ export function AdminCursos() {
     docente_id: docenteId || undefined,
     page,
   });
-  const selected = cursos.page?.data.find((curso) => curso.id === selectedId) ?? null;
-  const alumnosQuery = useQuery({
-    queryKey: ["admin", "curso-alumnos", selectedId],
-    queryFn: () => cursos.listAlumnos(selectedId as number),
-    enabled: selectedId !== null,
-  });
-  const alumnosPerPage = 10;
-  const alumnos = alumnosQuery.data ?? [];
-  const alumnosPages = Math.max(1, Math.ceil(alumnos.length / alumnosPerPage));
-  const alumnosVisibles = alumnos.slice(
-    (alumnosPage - 1) * alumnosPerPage,
-    alumnosPage * alumnosPerPage,
-  );
-
-  const selectCurso = (curso: AdminCurso) => {
-    setSelectedId(curso.id);
-    setAlumnosPage(1);
-    const panel = detailRef.current;
-    if (panel) {
-      const bounds = panel.getBoundingClientRect();
-      if (bounds.top < 0 || bounds.bottom > window.innerHeight) {
-        panel.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    }
-  };
 
   const clearFilters = () => {
     setBuscar("");
@@ -82,9 +52,10 @@ export function AdminCursos() {
   };
 
   const saveDocente = async (docenteIdValue: number) => {
-    if (!selected) return;
-    await cursos.saveDocente(selected.id, docenteIdValue);
+    if (!editingCurso) return;
+    await cursos.saveDocente(editingCurso.id, docenteIdValue);
     setDocenteOpen(false);
+    setEditingCurso(null);
   };
 
   const saveCurso = async (payload: Parameters<typeof cursos.saveCurso>[0]) => {
@@ -106,7 +77,7 @@ export function AdminCursos() {
       <header className="admin-section-heading cursos-heading">
         <div>
           <h2>Cursos</h2>
-          <p>Consulta cursos y asigna docentes a sus grupos: selecciona un curso de la tabla para ver a los alumnos del curso.</p>
+          <p>Consulta cursos y asigna docentes a sus grupos. Abre una materia para ver su detalle y sus alumnos activos.</p>
         </div>
         <Button type="button" onClick={() => setOpen(true)} disabled={!canRegister}>
           <Plus aria-hidden="true" />
@@ -116,9 +87,7 @@ export function AdminCursos() {
 
       {notice && <p className="admin-success cursos-notice" role="status">{notice}</p>}
       {(cursos.error || materiasError || gruposError) && (
-        <p className="admin-form-error" role="alert">
-          {cursos.error || materiasError || gruposError}
-        </p>
+        <p className="admin-form-error" role="alert">{cursos.error || materiasError || gruposError}</p>
       )}
 
       <div className="cursos-filters">
@@ -172,10 +141,8 @@ export function AdminCursos() {
         ) : (
           <AdminCursosTable
             cursos={cursos.page?.data ?? []}
-            selectedId={selectedId}
             roman={roman}
-            onSelect={selectCurso}
-            onEditDocente={(curso) => { setSelectedId(curso.id); setAlumnosPage(1); setDocenteOpen(true); }}
+            onEditDocente={(curso) => { setEditingCurso(curso); setDocenteOpen(true); }}
           />
         )}
       </section>
@@ -195,63 +162,6 @@ export function AdminCursos() {
         </nav>
       )}
 
-      {selected ? (
-        <section ref={detailRef} className="cursos-detail" aria-label="Detalles del curso seleccionado">
-          <h2 className="cursos-summary">{selected.nombre} · {selected.grupo.nombre}</h2>
-          <h3 className="cursos-summary">Alumnos del curso <span className="admin-count-pill">{alumnosQuery.data?.length ?? 0}</span></h3>
-          {alumnosQuery.isPending ? (
-            <p className="admin-empty-state" role="status">Cargando alumnos...</p>
-          ) : alumnosQuery.error ? (
-            <p className="admin-form-error" role="alert">{alumnosQuery.error instanceof Error ? alumnosQuery.error.message : "No se pudieron cargar los alumnos."}</p>
-          ) : (
-            <div className="cursos-table-wrap">
-              <table className="cursos-table" aria-label="Alumnos del curso">
-                <thead><tr><th>Número de cuenta</th><th>Nombre</th></tr></thead>
-                <tbody>
-                  {alumnosVisibles.map((alumno) => (
-                    <tr key={alumno.alumno_id}><td>{alumno.numero_cuenta}</td><td>{alumno.nombre}</td></tr>
-                  ))}
-                  {alumnos.length === 0 && <tr><td colSpan={2} className="admin-empty-state">Este curso no tiene alumnos activos.</td></tr>}
-                </tbody>
-              </table>
-            </div>
-          )}
-          {!alumnosQuery.isPending && !alumnosQuery.error && alumnos.length > 0 && (
-            <nav className="cursos-pagination" aria-label="Paginación de alumnos del curso">
-              <span>
-                {`${(alumnosPage - 1) * alumnosPerPage + 1}–${Math.min(alumnosPage * alumnosPerPage, alumnos.length)} de ${alumnos.length} alumnos`}
-              </span>
-              <div className="cursos-pagination-controls">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  aria-label="Página anterior de alumnos"
-                  disabled={alumnosPage === 1}
-                  onClick={() => setAlumnosPage((current) => current - 1)}
-                >
-                  <ChevronLeft aria-hidden="true" />
-                </Button>
-                <span>Página {alumnosPage} de {alumnosPages}</span>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  aria-label="Página siguiente de alumnos"
-                  disabled={alumnosPage >= alumnosPages}
-                  onClick={() => setAlumnosPage((current) => current + 1)}
-                >
-                  <ChevronRight aria-hidden="true" />
-                </Button>
-              </div>
-            </nav>
-          )}
-          <p className="cursos-access">Lo pueden ver el admin, el docente asignado y los alumnos activos del grupo del curso.</p>
-        </section>
-      ) : (
-        <p className="cursos-access">Pulsa un curso de la tabla para ver sus alumnos, o el lápiz de la columna Docente para asignarle uno.</p>
-      )}
-
       {open && (
         <AdminCursoFormDialog
           materias={materias}
@@ -263,13 +173,13 @@ export function AdminCursos() {
           onClose={() => setOpen(false)}
         />
       )}
-      {docenteOpen && selected && (
+      {docenteOpen && editingCurso && (
         <AdminCursoDocenteDialog
-          curso={selected}
+          curso={editingCurso}
           docentes={cursos.docentes}
           saving={cursos.savingDocente}
           onSubmit={(docenteIdValue) => void saveDocente(docenteIdValue)}
-          onClose={() => setDocenteOpen(false)}
+          onClose={() => { setDocenteOpen(false); setEditingCurso(null); }}
         />
       )}
     </section>

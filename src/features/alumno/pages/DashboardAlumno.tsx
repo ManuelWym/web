@@ -1,12 +1,8 @@
 
 
 
-export const DashboardAlumno = () => {
-  
-  
-  
-  
-    return <>
-        <div>DashboardAlumno</div>
-    </>;
-};
+import { MisCursos } from "@/features/cursos/pages/MisCursos";
+
+export function DashboardAlumno() {
+  return <MisCursos role="alumno" />;
+}

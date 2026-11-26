@@ -6,6 +6,7 @@ import { AdminMaterias } from "@/features/admin/pages/AdminMaterias";
 import { AdminUpdate } from "@/features/admin/pages/AdminUpdate";
 import { AdminUsuarios } from "@/features/admin/pages/AdminUsuarios";
 import { DashboardAlumno } from "@/features/alumno/pages/DashboardAlumno";
+import { CursoDetail } from "@/features/cursos/pages/CursoDetail";
 import { CampusFeaturePage } from "@/features/shared/pages/CampusFeaturePage";
 import { DocenteDashboard } from "@/features/docente/pages/DocenteDashboard";
 import { ChangeNip } from "@/features/auth/pages/ChangeNip";
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
           {
             path: "cambiar-nip",
             element: <ChangeNip />,
+          },
+          {
+            path: "cursos/:cursoId",
+            element: <CursoDetail />,
           },
           {
             path: "mensajes",

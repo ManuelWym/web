@@ -1,15 +1,14 @@
 import { Pencil } from "lucide-react";
+import { Link } from "react-router";
 import type { AdminCurso } from "@/features/admin/types/AdminCurso";
 
 interface Props {
   cursos: AdminCurso[];
-  selectedId: number | null;
   roman: (value: number) => string;
-  onSelect: (curso: AdminCurso) => void;
   onEditDocente: (curso: AdminCurso) => void;
 }
 
-export function AdminCursosTable({ cursos, selectedId, roman, onSelect, onEditDocente }: Props) {
+export function AdminCursosTable({ cursos, roman, onEditDocente }: Props) {
   return (
     <div className="cursos-table-wrap">
       <table className="cursos-table" aria-label="Cursos registrados">
@@ -25,20 +24,12 @@ export function AdminCursosTable({ cursos, selectedId, roman, onSelect, onEditDo
         </thead>
         <tbody>
           {cursos.map((curso) => (
-            <tr
-              key={curso.id}
-              className="cursos-row-clickable"
-              tabIndex={0}
-              aria-current={curso.id === selectedId ? "true" : undefined}
-              onClick={() => onSelect(curso)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
-                  onSelect(curso);
-                }
-              }}
-            >
-              <td className="cursos-name">{curso.nombre}</td>
+            <tr key={curso.id}>
+              <td className="cursos-name">
+                <Link to={`/cursos/${curso.id}`} className="cursos-detail-link">
+                  {curso.nombre}
+                </Link>
+              </td>
               <td>{curso.clave}</td>
               <td className="cursos-group">
                 <strong>{curso.grupo.nombre}</strong>
