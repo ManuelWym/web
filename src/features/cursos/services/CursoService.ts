@@ -92,7 +92,7 @@ function parseCurso(value: unknown, grupo: CursoGrupo): Curso {
     id: positive(value.id, "ID de curso"),
     materia_id: positive(value.materia_id, "ID de materia"),
     grupo_id: positive(value.grupo_id, "ID de grupo"),
-    docente_id: docenteId === null ? null : positive(docenteId, "ID de docente"),
+    docente_id: docenteId == null ? null : positive(docenteId, "ID de docente"),
     nombre: value.nombre,
     clave: value.clave,
     grupo,
@@ -118,16 +118,9 @@ export async function getCurso(id: number): Promise<Curso> {
   }
 }
 
-interface MisCursosFilters {
-  grupo_id?: number;
-}
-
-export async function listMisCursos(filters: MisCursosFilters = {}): Promise<MisCursosGrupo[]> {
+export async function listMisCursos(): Promise<MisCursosGrupo[]> {
   try {
-    const response = await apiClient.get<unknown>("/mis-cursos", {
-      headers: getHeaders(),
-      params: filters,
-    });
+    const response = await apiClient.get<unknown>("/mis-cursos", { headers: getHeaders() });
     const data = unwrapData(response.data);
     if (!Array.isArray(data)) throw new Error("La API devolvió una lista de cursos no válida.");
 

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight, Search, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { listCursoAlumnos } from "@/features/cursos/services/CursoService";
@@ -10,10 +10,21 @@ interface CursoAlumnosPanelProps {
 
 export function CursoAlumnosPanel({ cursoId }: CursoAlumnosPanelProps) {
   const [buscar, setBuscar] = useState("");
+  const [buscarDebounced, setBuscarDebounced] = useState("");
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setBuscarDebounced(buscar.trim());
+      setPage(1);
+    }, 300);
+    return () => window.clearTimeout(timeoutId);
+  }, [buscar]);
+
   const alumnosQuery = useQuery({
-    queryKey: ["curso", cursoId, "alumnos", buscar.trim(), page],
-    queryFn: () => listCursoAlumnos(cursoId, { buscar: buscar.trim() || undefined, page }),
+    queryKey: ["curso", cursoId, "alumnos", buscarDebounced, page],
+    queryFn: () => listCursoAlumnos(cursoId, { buscar: buscarDebounced || undefined, page }),
+    placeholderData: keepPreviousData,
   });
   const alumnosPage = alumnosQuery.data;
   const meta = alumnosPage?.meta;
@@ -41,10 +52,7 @@ export function CursoAlumnosPanel({ cursoId }: CursoAlumnosPanelProps) {
             type="search"
             value={buscar}
             placeholder="Nombre o número de cuenta"
-            onChange={(event) => {
-              setBuscar(event.target.value);
-              setPage(1);
-            }}
+            onChange={(event) => setBuscar(event.target.value)}
           />
         </span>
       </label>

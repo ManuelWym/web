@@ -17,12 +17,6 @@ export interface AdminCurso {
   docente: AdminCursoDocente | null;
 }
 
-export interface AdminCursoAlumno {
-  alumno_id: number;
-  numero_cuenta: string;
-  nombre: string;
-}
-
 export interface AdminCursoPayload {
   materia_id: number;
   grupo_id: number;

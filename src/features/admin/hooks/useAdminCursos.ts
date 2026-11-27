@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   createCurso,
-  listCursoAlumnos,
   listCursos,
   listDocentesActivos,
   updateCursoDocente,
@@ -68,6 +67,5 @@ export function useAdminCursos(filters: AdminCursosFilters) {
     savingDocente: docenteMutation.isPending,
     saveCurso,
     saveDocente,
-    listAlumnos: listCursoAlumnos,
   };
 }

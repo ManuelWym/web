@@ -2,7 +2,6 @@ import axios from "axios";
 import type { ApiErrorResponse } from "@/features/auth/types/ApiErrorResponse";
 import type {
   AdminCurso,
-  AdminCursoAlumno,
   AdminCursoPayload,
   AdminCursoResponse,
   AdminCursosFilters,
@@ -82,7 +81,7 @@ function parseCurso(value: unknown): AdminCurso {
     id: positive(value.id, "ID de curso"),
     materia_id: positive(value.materia_id, "ID de materia"),
     grupo_id: positive(value.grupo_id, "ID de grupo"),
-    docente_id: value.docente_id === null ? null : positive(value.docente_id, "ID de docente"),
+    docente_id: value.docente_id == null ? null : positive(value.docente_id, "ID de docente"),
     nombre: value.nombre,
     clave: value.clave,
     grupo: parseGrupo(value.grupo),
@@ -155,33 +154,6 @@ export async function updateCursoDocente(id: number, docenteId: number | null): 
     return { message: response.data.message, curso };
   } catch (error) {
     throw new Error(getError(error, "No se pudo asignar el docente"));
-  }
-}
-
-export async function listCursoAlumnos(id: number): Promise<AdminCursoAlumno[]> {
-  try {
-    const all: AdminCursoAlumno[] = [];
-    let page = 1;
-    let lastPage = 1;
-    do {
-      const response = await apiClient.get<unknown>(`/cursos/${encodeURIComponent(id)}/alumnos`, {
-        headers: getHeaders(), params: { page },
-      });
-      if (!isRecord(response.data) || !Array.isArray(response.data.data) || !isRecord(response.data.meta)) {
-        throw new Error("La API devolvió una lista de alumnos no válida.");
-      }
-      lastPage = positive(response.data.meta.last_page, "número de última página");
-      for (const item of response.data.data) {
-        if (!isRecord(item) || typeof item.nombre !== "string" || typeof item.numero_cuenta !== "string") {
-          throw new Error("La API devolvió un alumno no válido.");
-        }
-        all.push({ alumno_id: positive(item.alumno_id, "ID de alumno"), numero_cuenta: item.numero_cuenta, nombre: item.nombre });
-      }
-      page += 1;
-    } while (page <= lastPage);
-    return all;
-  } catch (error) {
-    throw new Error(getError(error, "No se pudieron cargar los alumnos del curso"));
   }
 }
 

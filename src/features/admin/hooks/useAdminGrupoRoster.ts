@@ -136,7 +136,7 @@ export function useAdminGrupoRoster(
         queryClient.invalidateQueries({
           queryKey: ["admin", "grupos", importRecord.grupoId, "alumnos"],
         }),
-        queryClient.invalidateQueries({ queryKey: ["admin", "grupos"] }),
+        queryClient.invalidateQueries({ queryKey: ["admin", "grupos"], exact: true }),
       ]);
     }
   }, [importRecord, importStatusQuery.data?.estado, queryClient]);
@@ -225,6 +225,15 @@ export function useAdminGrupoRoster(
     }
     if (!csv.trim()) {
       setCsvError("Agrega el contenido del CSV antes de importar.");
+      return null;
+    }
+    const filasDeDatos = csv
+      .trim()
+      .split(/\r?\n/)
+      .slice(1)
+      .filter((fila) => fila.trim() !== "");
+    if (filasDeDatos.length === 0) {
+      setCsvError("El CSV solo contiene el encabezado. Agrega al menos un alumno.");
       return null;
     }
 

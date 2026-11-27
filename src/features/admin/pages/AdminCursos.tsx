@@ -53,15 +53,23 @@ export function AdminCursos() {
 
   const saveDocente = async (docenteIdValue: number) => {
     if (!editingCurso) return;
-    await cursos.saveDocente(editingCurso.id, docenteIdValue);
-    setDocenteOpen(false);
-    setEditingCurso(null);
+    try {
+      await cursos.saveDocente(editingCurso.id, docenteIdValue);
+      setDocenteOpen(false);
+      setEditingCurso(null);
+    } catch {
+      // El hook ya mostró el toast de error; el diálogo queda abierto para reintentar.
+    }
   };
 
   const saveCurso = async (payload: Parameters<typeof cursos.saveCurso>[0]) => {
-    const curso = await cursos.saveCurso(payload);
-    setOpen(false);
-    setNotice(`Curso registrado: ${curso.nombre} · ${curso.grupo.nombre}`);
+    try {
+      const curso = await cursos.saveCurso(payload);
+      setOpen(false);
+      setNotice(`Curso registrado: ${curso.nombre} · ${curso.grupo.nombre}`);
+    } catch {
+      // El hook ya mostró el toast de error; el diálogo queda abierto para reintentar.
+    }
   };
 
   const canRegister =

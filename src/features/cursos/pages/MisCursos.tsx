@@ -19,18 +19,16 @@ function normalizarTexto(value: string): string {
 export function MisCursos({ role }: MisCursosProps) {
   const [grupoId, setGrupoId] = useState("");
   const [buscar, setBuscar] = useState("");
-  const todosLosCursosQuery = useQuery({
+  const cursosQuery = useQuery({
     queryKey: ["mis-cursos"],
-    queryFn: () => listMisCursos(),
+    queryFn: listMisCursos,
   });
-  const cursosPorGrupoQuery = useQuery({
-    queryKey: ["mis-cursos", grupoId],
-    queryFn: () => listMisCursos({ grupo_id: Number(grupoId) }),
-    enabled: role === "docente" && grupoId !== "",
-  });
-  const cursosQuery = grupoId ? cursosPorGrupoQuery : todosLosCursosQuery;
+  const todosLosGrupos = cursosQuery.data ?? [];
+  const gruposDelFiltro = grupoId
+    ? todosLosGrupos.filter(({ grupo }) => String(grupo.id) === grupoId)
+    : todosLosGrupos;
   const textoBuscado = normalizarTexto(buscar.trim());
-  const gruposVisibles = (cursosQuery.data ?? [])
+  const gruposVisibles = gruposDelFiltro
     .map(({ grupo, cursos }) => ({
       grupo,
       cursos: cursos.filter((curso) => normalizarTexto(curso.nombre).includes(textoBuscado)),
@@ -49,7 +47,7 @@ export function MisCursos({ role }: MisCursosProps) {
         <p>{description}</p>
       </header>
 
-      {todosLosCursosQuery.data && todosLosCursosQuery.data.length > 0 && (
+      {todosLosGrupos.length > 0 && (
         <label className="course-name-search">
           Buscar curso
           <span>
@@ -64,12 +62,12 @@ export function MisCursos({ role }: MisCursosProps) {
         </label>
       )}
 
-      {role === "docente" && todosLosCursosQuery.data && todosLosCursosQuery.data.length > 0 && (
+      {role === "docente" && todosLosGrupos.length > 0 && (
         <label className="course-group-filter">
           Filtrar por grupo
           <select value={grupoId} onChange={(event) => setGrupoId(event.target.value)}>
             <option value="">Todos los grupos</option>
-            {todosLosCursosQuery.data.map(({ grupo }) => (
+            {todosLosGrupos.map(({ grupo }) => (
               <option key={grupo.id} value={grupo.id}>
                 Grupo {grupo.nombre} · {grupo.semestre.nombre}
               </option>
@@ -84,7 +82,7 @@ export function MisCursos({ role }: MisCursosProps) {
         <p className="course-error" role="alert">
           {cursosQuery.error instanceof Error ? cursosQuery.error.message : "No se pudieron cargar tus cursos."}
         </p>
-      ) : cursosQuery.data?.length === 0 ? (
+      ) : todosLosGrupos.length === 0 ? (
         <section className="course-no-results">
           <BookOpen aria-hidden="true" />
           <h2>Aún no tienes cursos disponibles</h2>
@@ -94,7 +92,11 @@ export function MisCursos({ role }: MisCursosProps) {
         <section className="course-no-results">
           <Search aria-hidden="true" />
           <h2>No se encontraron cursos</h2>
-          <p>Prueba con otro nombre de curso.</p>
+          <p>
+            {textoBuscado
+              ? "Prueba con otro nombre de curso."
+              : "No hay cursos en el grupo seleccionado."}
+          </p>
         </section>
       ) : (
         <div className="course-groups">
