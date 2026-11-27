@@ -80,7 +80,7 @@ export function CursoDetail() {
             </div>
           </section>
 
-          <CursoAlumnosPanel cursoId={courseQuery.data.id} />
+          {role !== "alumno" && <CursoAlumnosPanel cursoId={courseQuery.data.id} />}
         </>
       ) : null}
     </main>

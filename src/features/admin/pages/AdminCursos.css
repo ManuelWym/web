@@ -69,6 +69,31 @@
   @apply px-3 py-2;
 }
 
+.cursos-docente-options {
+  @apply max-h-56 overflow-y-auto rounded-md border border-border bg-popover;
+}
+
+.cursos-docente-options button {
+  @apply flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm text-popover-foreground;
+}
+
+.cursos-docente-options button:hover,
+.cursos-docente-options button[aria-selected="true"] {
+  @apply bg-accent;
+}
+
+.cursos-docente-options button + button {
+  @apply border-t border-border;
+}
+
+.cursos-docente-selected {
+  @apply text-sm text-muted-foreground;
+}
+
+.cursos-docente-selected strong {
+  @apply text-foreground;
+}
+
 .cursos-summary {
   @apply mb-3 flex items-center gap-2 text-sm font-semibold;
 }
