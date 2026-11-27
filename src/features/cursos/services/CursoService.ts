@@ -118,9 +118,16 @@ export async function getCurso(id: number): Promise<Curso> {
   }
 }
 
-export async function listMisCursos(): Promise<MisCursosGrupo[]> {
+interface MisCursosFilters {
+  grupo_id?: number;
+}
+
+export async function listMisCursos(filters: MisCursosFilters = {}): Promise<MisCursosGrupo[]> {
   try {
-    const response = await apiClient.get<unknown>("/mis-cursos", { headers: getHeaders() });
+    const response = await apiClient.get<unknown>("/mis-cursos", {
+      headers: getHeaders(),
+      params: filters,
+    });
     const data = unwrapData(response.data);
     if (!Array.isArray(data)) throw new Error("La API devolvió una lista de cursos no válida.");
 

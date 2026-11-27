@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, BookOpen, GraduationCap, Users } from "lucide-react";
+import { ArrowRight, BookOpen, GraduationCap, Search, Users } from "lucide-react";
 import { Link } from "react-router";
 import { listMisCursos } from "@/features/cursos/services/CursoService";
 import "./CursoDetail.css";
@@ -8,11 +9,33 @@ interface MisCursosProps {
   role: "alumno" | "docente";
 }
 
+function normalizarTexto(value: string): string {
+  return value
+    .normalize("NFD")
+    .replaceAll(/\p{Diacritic}/gu, "")
+    .toLocaleLowerCase();
+}
+
 export function MisCursos({ role }: MisCursosProps) {
-  const cursosQuery = useQuery({
+  const [grupoId, setGrupoId] = useState("");
+  const [buscar, setBuscar] = useState("");
+  const todosLosCursosQuery = useQuery({
     queryKey: ["mis-cursos"],
-    queryFn: listMisCursos,
+    queryFn: () => listMisCursos(),
   });
+  const cursosPorGrupoQuery = useQuery({
+    queryKey: ["mis-cursos", grupoId],
+    queryFn: () => listMisCursos({ grupo_id: Number(grupoId) }),
+    enabled: role === "docente" && grupoId !== "",
+  });
+  const cursosQuery = grupoId ? cursosPorGrupoQuery : todosLosCursosQuery;
+  const textoBuscado = normalizarTexto(buscar.trim());
+  const gruposVisibles = (cursosQuery.data ?? [])
+    .map(({ grupo, cursos }) => ({
+      grupo,
+      cursos: cursos.filter((curso) => normalizarTexto(curso.nombre).includes(textoBuscado)),
+    }))
+    .filter(({ cursos }) => cursos.length > 0);
   const heading = role === "docente" ? "Mis cursos asignados" : "Mis cursos";
   const description = role === "docente"
     ? "Consulta la información de tus materias y a los alumnos activos de cada grupo."
@@ -26,6 +49,35 @@ export function MisCursos({ role }: MisCursosProps) {
         <p>{description}</p>
       </header>
 
+      {todosLosCursosQuery.data && todosLosCursosQuery.data.length > 0 && (
+        <label className="course-name-search">
+          Buscar curso
+          <span>
+            <Search size={16} aria-hidden="true" />
+            <input
+              type="search"
+              value={buscar}
+              placeholder="Nombre del curso"
+              onChange={(event) => setBuscar(event.target.value)}
+            />
+          </span>
+        </label>
+      )}
+
+      {role === "docente" && todosLosCursosQuery.data && todosLosCursosQuery.data.length > 0 && (
+        <label className="course-group-filter">
+          Filtrar por grupo
+          <select value={grupoId} onChange={(event) => setGrupoId(event.target.value)}>
+            <option value="">Todos los grupos</option>
+            {todosLosCursosQuery.data.map(({ grupo }) => (
+              <option key={grupo.id} value={grupo.id}>
+                Grupo {grupo.nombre} · {grupo.semestre.nombre}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
+
       {cursosQuery.isPending ? (
         <p className="course-empty" role="status">Cargando tus cursos…</p>
       ) : cursosQuery.error ? (
@@ -38,15 +90,20 @@ export function MisCursos({ role }: MisCursosProps) {
           <h2>Aún no tienes cursos disponibles</h2>
           <p>Cuando se te asigne un curso, aparecerá aquí.</p>
         </section>
+      ) : gruposVisibles.length === 0 ? (
+        <section className="course-no-results">
+          <Search aria-hidden="true" />
+          <h2>No se encontraron cursos</h2>
+          <p>Prueba con otro nombre de curso.</p>
+        </section>
       ) : (
         <div className="course-groups">
-          {cursosQuery.data?.map(({ grupo, cursos }) => (
+          {gruposVisibles.map(({ grupo, cursos }) => (
             <section key={grupo.id} className="course-group" aria-labelledby={`course-group-${grupo.id}`}>
               <header>
                 <div>
                   <span className="course-eyebrow">GRUPO</span>
-                  <h2 id={`course-group-${grupo.id}`}>{grupo.nombre}</h2>
-                  <p>{grupo.semestre.nombre}</p>
+                  <h2 id={`course-group-${grupo.id}`}>Grupo {grupo.nombre} · {grupo.semestre.nombre}</h2>
                 </div>
                 <GraduationCap aria-hidden="true" />
               </header>
